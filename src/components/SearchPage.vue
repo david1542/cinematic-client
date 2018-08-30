@@ -25,14 +25,24 @@ export default {
   name: 'SearchPage',
   data: function () {
     return {
-      movies: null
+      movies: null,
+      err: null
+    }
+  },
+  methods: {
+     generateImage: function (poster, size) {
+      return MOVIE_IMG_ROOT + 'w' + size + '/' + poster
     }
   },
   mounted: function () {
     const { query } = this.$router.history.current.query
     axios.get(moviesQueryUrl(query)).then(res => {
-      console.log(res.data)
-      this.movies = res.data.results
+      if (res.status === 200) {
+        this.movies = res.data.results.map(movie => {
+        movie.poster = this.generateImage(movie.poster_path, 300)
+        return movie
+      })
+      } else throw new Error('Could not search')
     }).catch(err => console.log(err))
   }
 }

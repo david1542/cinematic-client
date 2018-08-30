@@ -1,6 +1,6 @@
 <template>
   <div class="search-bar">
-    <input type="text" class="form-control" v-model="query" placeholder="Type something here..." />
+    <input type="text" class="form-control" v-model="query" v-on:keydown.enter="onSearch" placeholder="Type something here..." />
     <button class="btn btn-primary mt-3" v-on:click="onSearch">Search</button>
   </div>
 </template>
