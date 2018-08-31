@@ -81,6 +81,8 @@ export default {
   justify-content: center;
   align-items: center;
   transform: scale(1.2,1.4);
+  user-select: none;
+  pointer-events: none;
 }
 
 .movie-container {
