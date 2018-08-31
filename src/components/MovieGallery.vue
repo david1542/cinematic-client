@@ -2,10 +2,11 @@
   <div class="list-container">
     <div class="movie-list" v-bind:style="{transform: 'translateX(' + getLeft + 'px)'}">
       <div
-        class="movie-item"
+        class="movie-item hvr-outline-in"
         v-for="(movie, index) in movies"
         v-bind:key="movie.id"
         v-bind:class="{ centered: middleItem === index }"
+        v-on:click="showMovie(movie.id)"
       >
         <img v-bind:src="movie.poster" />
         <h4 class="movie-title">{{movie.original_title}}</h4>
@@ -37,6 +38,9 @@ export default {
     },
     decrease: function () {
       this.middleItem -= 1
+    },
+    showMovie: function (id) {
+      this.$router.push({path: 'movie', query: { id }})
     }
   },
   computed: {
@@ -48,6 +52,13 @@ export default {
 </script>
 
 <style scoped>
+@import url("hover.css/css/hover-min.css");
+
+.hvr-outline-in:before {
+  border: white solid 2px;
+  border-radius: 5px;
+  transition-duration: 0.3s;
+}
 .list-container {
   position: relative;
   width: 100vw;
@@ -55,10 +66,11 @@ export default {
 .movie-item {
   margin: 0 12px;
   width: 120px;
-  height: 250px;
+  /* height: 250px; */
   display: flex;
   flex-direction: column;
   transition: 0.3s;
+  cursor: pointer;
 }
 
 .movie-item.centered {
@@ -72,8 +84,8 @@ export default {
 }
 
 .movie-item > h4 {
+  margin-top: 10px;
   font-size: 15px;
-  flex-basis: 20%;
   color: white;
 }
 
@@ -83,6 +95,7 @@ export default {
   transition: 0.3s;
   margin-left: 41.5%;
   transform-origin: center;
+  z-index: 2;
 }
 
 .slide-buttons {
@@ -91,13 +104,13 @@ export default {
   justify-content: space-between;
   align-items: center;
   height: 200px;
-  z-index: 2;
 }
 
 .slide-buttons > .button {
   position: absolute;
   display: inline-block;
   cursor: pointer;
+  z-index: 3;
 }
 
 .slide-buttons > .button.hidden {
