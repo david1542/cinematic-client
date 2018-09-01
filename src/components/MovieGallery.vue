@@ -7,9 +7,19 @@
         v-bind:key="movie.id"
         v-bind:class="{ centered: middleItem === index }"
         v-on:click="showMovie(movie.id)"
+        v-on:mouseleave="hideActions"
+        v-on:mouseenter="showActions(index)"
       >
         <img v-bind:src="movie.poster" />
         <h4 class="movie-title">{{movie.original_title}}</h4>
+        <div class="actions" v-bind:class="{visible: isActionsVisible(index)}">
+          <div class="actions-wrapper">
+            <div class="favorites-button" v-on:mouseenter="fillFavoriteButton" v-on:mouseleave="unfillFavoriteButton">
+              <i v-bind:class="{hidden: !favoriteHovered}" class="fas fa-heart"></i>
+              <i v-bind:class="{hidden: favoriteHovered}" class="far fa-heart"></i>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="slide-buttons">
@@ -29,10 +39,30 @@ export default {
   props: ['movies'],
   data: function () {
     return {
-      middleItem: this.movies.length / 2
+      middleItem: this.movies.length / 2,
+      actionsVisible: false,
+      hoveredItem: null,
+      favoriteHovered: false
     }
   },
   methods: {
+    showActions (index) {
+      this.actionsVisible = !this.actionsVisible
+      this.hoveredItem = index
+    },
+    hideActions () {
+      this.actionsVisible = false
+      this.hoveredItem = null
+    },
+    fillFavoriteButton () {
+      this.favoriteHovered = true
+    },
+    unfillFavoriteButton () {
+      this.favoriteHovered = false
+    },
+    isActionsVisible (index) {
+      return this.actionsVisible && this.hoveredItem === index
+    },
     increase: function () {
       this.middleItem += 1
     },
@@ -64,6 +94,7 @@ export default {
   width: 100vw;
 }
 .movie-item {
+  position: relative;
   margin: 0 12px;
   width: 120px;
   /* height: 250px; */
@@ -87,6 +118,42 @@ export default {
   margin-top: 10px;
   font-size: 15px;
   color: white;
+}
+
+.movie-item > .actions {
+  position: absolute;
+  top: 0;
+  right: 15px;
+  color: white;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;
+}
+
+.movie-item > .actions.visible {
+  opacity: 1;
+  pointer-events: initial;
+}
+
+.movie-item > .actions > .actions-wrapper {
+  position: relative;
+  top: 0;
+  right: 0;
+}
+
+.movie-item > .actions > .actions-wrapper > .favorites-button > i {
+  transition: 0.3s;
+  position: absolute;
+  font-size: 15px;
+}
+
+.movie-item > .actions > .actions-wrapper > .favorites-button > i.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.movie-item > .actions > .actions-wrapper > .favorites-button > .fas {
+  color: #FF3A53;
 }
 
 .movie-list {
