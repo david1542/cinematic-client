@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
 
-const store = Vuex.Store({
+const store = new Vuex.Store({
   modules: {
     user
   },

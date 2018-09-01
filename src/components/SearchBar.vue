@@ -23,9 +23,7 @@ export default {
 
 <style scoped>
   .search-bar {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: block;
     margin-bottom: 30px;
   }
   .title {
@@ -34,5 +32,9 @@ export default {
   }
   input[type="text"] {
     width: 400px;
+  }
+  button {
+    height: 41px;
+    width: 167px;
   }
 </style>

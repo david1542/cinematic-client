@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const crypto = require('crypto')
+const cors = require('cors')
 const config = require('./config')
 const User = require('./models/user')
 
@@ -18,6 +19,7 @@ mongoose.connect(config.MONGODB_URI, function (err) {
 })
 
 app.use(bodyParser.json())
+app.use(cors())
 
 app.get('/', function (req, res) {
   res.send('hello')

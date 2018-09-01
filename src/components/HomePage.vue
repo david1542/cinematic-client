@@ -1,9 +1,15 @@
 <template>
   <div class="home-page">
-    <h2 class="page-title">Movie App - Vue.js</h2>
-    <search-bar v-on:search-movie="sendQuery" />
+    <nav-bar />
     <h2 class="popular-movies">Popular Movies</h2>
     <movie-gallery v-if="movies" v-bind:movies="movies" />
+    <h2 class="page-title">Movie App - Vue.js</h2>
+    <search-bar v-on:search-movie="sendQuery" />
+    <div class="register-box">
+      <h2 class="register-title">Don't have an account yet? Register now for free!</h2>
+      <!-- <button class="btn btn-primary" v-on:click="moveToRegister">Register</button> -->
+      <router-link to="/register" class="btn btn-primary">Register</router-link>
+    </div>
   </div>
 </template>
 
@@ -11,6 +17,7 @@
 import axios from 'axios'
 import MovieGallery from './MovieGallery'
 import SearchBar from './SearchBar'
+import Navbar from './Navbar'
 import { popularMoviesUrl } from '../queries'
 import { MOVIE_IMG_ROOT } from '../config'
 
@@ -18,7 +25,8 @@ export default {
   name: 'HomePage',
   components: {
     'movie-gallery': MovieGallery,
-    'search-bar': SearchBar
+    'search-bar': SearchBar,
+    'nav-bar': Navbar
   },
   data () {
     return {
@@ -42,6 +50,9 @@ export default {
     },
     sendQuery: function (query) {
       this.$router.push({path: 'search', query: { query }})
+    },
+    moveToRegister: function () {
+      this.$router.push('register')
     }
   }
 }
@@ -53,22 +64,33 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
   height: 100%;
   width: 100%;
   background-image: url('../assets/theater.jpg');
   background-size: cover;
+  padding-top: 70px;
+  padding-bottom: 150px;
 }
 .home-page > .page-title,
 .home-page > .popular-movies {
   font-size: 20px;
   text-align: center;
   color: white;
-  margin-top: 30px;
+  margin-top: 200px;
 }
 
 .home-page > .popular-movies {
   margin-top: 0;
-  margin-bottom: 100px;
+  margin: 40px 0 100px 0;
+}
+
+.home-page > .register-box {
+  margin-top: 100px;
+}
+.home-page > .register-box > .register-title {
+  color: white;
+  font-size: 23px;
 }
 </style>
