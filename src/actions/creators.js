@@ -10,3 +10,7 @@ export const loginUser = userDetails => ({
   type: 'user/' + ACTIONS.LOGIN_REQUEST,
   payload: { userDetails }
 })
+
+export const logoutUser = () => ({
+  type: 'user/' + ACTIONS.LOGOUT_REQUEST
+})

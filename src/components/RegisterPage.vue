@@ -1,5 +1,6 @@
 <template>
   <div class="register-page">
+    <nav-bar />
     <h2>Sign up today for free!</h2>
     <form class="register-form">
       <div class="form-group">
@@ -35,8 +36,12 @@
 
 <script>
 import { registerUser } from '../actions/creators'
+import Navbar from './Navbar'
 export default {
   name: 'RegisterPage',
+  components: {
+    'nav-bar': Navbar
+  },
   data () {
     return {
       firstName: null,

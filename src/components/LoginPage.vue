@@ -1,5 +1,6 @@
 <template>
   <div class="login-page">
+    <nav-bar />
     <h2>Already have an account? Sign in!</h2>
     <form class="login-form">
       <div class="form-group">
@@ -8,14 +9,14 @@
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input id="password" class="form-control" type="text" v-model="password" />
+        <input id="password" class="form-control" type="password" v-model="password" />
       </div>
       <button type="button" class="btn btn-lg btn-success" v-on:click="login">
         <span v-if="loading">
           Logging in
           <i class="fas fa-circle-notch fa-spin"></i>
         </span>
-        <span v-else>Sign Up!</span>
+        <span v-else>Log In</span>
       </button>
     </form>
   </div>
@@ -23,8 +24,12 @@
 
 <script>
 import { loginUser } from '../actions/creators'
+import Navbar from './Navbar'
 export default {
   name: 'LoginPage',
+  components: {
+    'nav-bar': Navbar
+  },
   data () {
     return {
       email: null,

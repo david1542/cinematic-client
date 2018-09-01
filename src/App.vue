@@ -5,8 +5,22 @@
 </template>
 
 <script>
+import axios from 'axios'
+import { logoutUser } from './actions/creators'
 export default {
-  name: 'App'
+  name: 'App',
+  created: function () {
+    axios.interceptors.response.use(undefined, function (err) {
+      return new Promise((resolve, reject) => {
+        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+        // if you ever get an unauthorized, logout the user
+          this.$store.dispatch(logoutUser())
+        // you can also redirect to /login if needed !
+        }
+        throw err
+      })
+    })
+  }
 }
 </script>
 

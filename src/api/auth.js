@@ -5,7 +5,9 @@ export default {
   register (userDetails, success, failure) {
     axios.post(SERVER_URL + '/register', { userDetails }).then(res => {
       if (res.status === 200) {
-        success(res.data)
+        const user = res.data
+        axios.defaults.headers.common['Authorization'] = user.token
+        success(user)
       } else {
         failure()
       }
@@ -22,6 +24,12 @@ export default {
       }
     }).catch(err => {
       failure(err)
+    })
+  },
+  logout () {
+    return new Promise((resolve, reject) => {
+      delete axios.defaults.headers.common['Authorization']
+      resolve()
     })
   }
 }

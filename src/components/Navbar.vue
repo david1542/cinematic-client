@@ -2,27 +2,33 @@
   <b-navbar toggleable="md" type="dark" variant="light">
     <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
     <b-navbar-brand href="#">
-      Movies - Vue.js
-      <i class="fas fa-film"></i>
+      <router-link to="/">
+        Movies - Vue.js
+        <i class="fas fa-film"></i>
+      </router-link>
     </b-navbar-brand>
     <b-collapse is-nav id="nav_collapse">
       <b-navbar-nav>
-        <b-nav-item href="/favorites" class="text-light">
-          Favorites
+        <b-nav-item class="text-light">
+          <router-link to="/favorites">
+            Favorites
+          </router-link>
         </b-nav-item>
-        <b-nav-item href="/search" class="text-light">
-          Search
+        <b-nav-item class="text-light">
+          <router-link to="/search">
+            Search
+          </router-link>
         </b-nav-item>
       </b-navbar-nav>
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
-      <b-nav-item-dropdown v-if="getUsername" right>
+      <b-nav-item-dropdown v-if="isAuthenticated" right>
         <!-- Using button-content slot -->
         <template slot="button-content">
           <h4 class="text-light user-dropdown-button">Hello {{ getUsername }}!</h4>
         </template>
         <b-dropdown-item href="#">Profile</b-dropdown-item>
-        <b-dropdown-item href="#">Signout</b-dropdown-item>
+        <b-dropdown-item href="#" v-on:click="logout">Signout</b-dropdown-item>
       </b-nav-item-dropdown>
       <div v-else right class="guest-links">
         <h4 class="text-light">
@@ -37,8 +43,17 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { logoutUser } from '../actions/creators'
 export default {
   name: 'Navbar',
+  methods: {
+    logout () {
+      this.$store.dispatch(logoutUser()).then(() => {
+        this.$router.push('/login')
+      })
+    }
+  },
   computed: {
     getUsername () {
       const { user } = this.$store.state.user
@@ -48,7 +63,10 @@ export default {
       }
 
       return false
-    }
+    },
+    ...mapGetters('user', [
+      'isAuthenticated'
+    ])
   }
 }
 </script>
@@ -98,5 +116,8 @@ export default {
 .navbar .guest-links > h4 > a {
   position: relative;
   font-size: 18px;
+}
+.navbar .dropdown-item {
+  color: black
 }
 </style>

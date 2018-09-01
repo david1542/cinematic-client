@@ -3,7 +3,7 @@
     <nav-bar />
     <h2 class="popular-movies">Popular Movies</h2>
     <movie-gallery v-if="movies" v-bind:movies="movies" />
-    <h2 class="page-title">Movie App - Vue.js</h2>
+    <h2 class="page-title">Search movies now for free!</h2>
     <search-bar v-on:search-movie="sendQuery" />
     <div class="register-box">
       <h2 class="register-title">Don't have an account yet? Register now for free!</h2>
