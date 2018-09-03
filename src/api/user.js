@@ -8,7 +8,7 @@ export default {
     const token = localStorage.getItem('user-token')
     axios({
       method: 'POST',
-      url: SERVER_URL + '/favorites',
+      url: SERVER_URL + '/users/favorites',
       data: {
         id
       },
@@ -27,7 +27,7 @@ export default {
     const token = localStorage.getItem('user-token')
     axios({
       method: 'DELETE',
-      url: SERVER_URL + '/favorites',
+      url: SERVER_URL + '/users/favorites',
       data: {
         id
       },
