@@ -42,7 +42,7 @@ const mutations = {
     state.addToFavoritesError = true
   },
   [REMOVE_FROM_FAVORITES_SUCCESS] (state, { id }) {
-    state.user.favorites = state.user.favorites.filter(movieId => movieId !== id)
+    state.user.favorites = state.user.favorites.filter(movieId => String(movieId) !== String(id))
   },
   [REMOVE_FROM_FAVORITES_FAILURE] (state) {
     state.addToFavoritesError = true
@@ -51,7 +51,7 @@ const mutations = {
 
 const getters = {
   isAuthenticated: state => !!state.token,
-  isMovieInFavorites: state => id => state.user.favorites.some(movieId => movieId === id)
+  isMovieInFavorites: state => id => state.user.favorites.some(movieId => String(movieId) === String(id))
 }
 
 const actions = {

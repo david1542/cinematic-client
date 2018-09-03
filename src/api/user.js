@@ -3,9 +3,9 @@ import {
   SERVER_URL
 } from '../config'
 
-const token = localStorage['user-token']
 export default {
   addToFavorites (id, success, failure) {
+    const token = localStorage.getItem('user-token')
     axios({
       method: 'POST',
       url: SERVER_URL + '/favorites',
@@ -24,6 +24,7 @@ export default {
     })
   },
   removeFromFavorites (id, success, failure) {
+    const token = localStorage.getItem('user-token')
     axios({
       method: 'DELETE',
       url: SERVER_URL + '/favorites',

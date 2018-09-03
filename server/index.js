@@ -91,15 +91,15 @@ app.delete('/favorites', auth.tokenMiddleware, function (req, res) {
   const { user } = req
   const { id } = req.body
 
-  User.findByIdAndUpdate(user._id, {
-    $pull: {
-      'favorites': id
-    }
-  }).save(function (err, newUser) {
-    if (err || !newUser) return res.sendStatus(500)
+  User.findByIdAndUpdate(
+    user._id,
+    { $pull: { favorites: id } },
+    { safe: true, new: true })
+    .exec(function (err, newUser) {
+      if (err || !newUser) return res.sendStatus(500)
 
-    res.json({ id })
-  })
+      res.json({ id })
+    })
 })
 
 app.listen(4000, function () {

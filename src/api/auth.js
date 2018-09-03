@@ -30,6 +30,7 @@ export default {
   logout () {
     return new Promise((resolve, reject) => {
       localStorage.removeItem('user-token')
+      localStorage.removeItem('vuex')
       resolve()
     })
   }
