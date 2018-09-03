@@ -1,12 +1,17 @@
-import auth from '../../api/auth'
+import auth from '@/api/auth'
+import user from '@/api/user'
 import { REGISTER_SUCCESS, REGISTER_FAILURE,
   REGISTER_REQUEST, LOGIN_REQUEST, LOGIN_SUCCESS,
-  LOGIN_FAILURE, LOGOUT_REQUEST } from '../../actions'
+  LOGIN_FAILURE, LOGOUT_REQUEST, ADD_TO_FAVORITES,
+  ADD_TO_FAVORITES_SUCCESS, ADD_TO_FAVORITES_FAILURE,
+  REMOVE_FROM_FAVORITES, REMOVE_FROM_FAVORITES_SUCCESS,
+  REMOVE_FROM_FAVORITES_FAILURE } from '../../actions'
 
 const state = {
   user: null,
   registerError: false,
   loginError: false,
+  addToFavoritesError: false,
   token: localStorage.getItem('user-token') || ''
 }
 
@@ -29,11 +34,24 @@ const mutations = {
     state.token = null
     state.loginError = false
     state.registerError = false
+  },
+  [ADD_TO_FAVORITES_SUCCESS] (state, { id }) {
+    state.user.favorites.push(id)
+  },
+  [ADD_TO_FAVORITES_FAILURE] (state) {
+    state.addToFavoritesError = true
+  },
+  [REMOVE_FROM_FAVORITES_SUCCESS] (state, { id }) {
+    state.user.favorites = state.user.favorites.filter(movieId => movieId !== id)
+  },
+  [REMOVE_FROM_FAVORITES_FAILURE] (state) {
+    state.addToFavoritesError = true
   }
 }
 
 const getters = {
-  isAuthenticated: state => !!state.token
+  isAuthenticated: state => !!state.token,
+  isMovieInFavorites: state => id => state.user.favorites.some(movieId => movieId === id)
 }
 
 const actions = {
@@ -42,15 +60,11 @@ const actions = {
       auth.register(
         payload.userDetails,
         (user) => {
-          debugger
           commit(REGISTER_SUCCESS, { user })
-          localStorage.setItem('user-token', user.token) // store the token in localstorage
           resolve()
         },
         (err) => {
-          debugger
           commit(REGISTER_FAILURE)
-          localStorage.removeItem('user-token') // if the request fails, remove any possible user token if possible
           reject(err)
         }
       )
@@ -75,9 +89,38 @@ const actions = {
     return new Promise((resolve, reject) => {
       auth.logout().then(() => {
         commit(LOGOUT_REQUEST)
-        localStorage.removeItem('user-token')
         resolve()
       })
+    })
+  },
+  [ADD_TO_FAVORITES] ({ commit }, { payload }) {
+    return new Promise((resolve, reject) => {
+      user.addToFavorites(
+        payload.id,
+        (id) => {
+          commit(ADD_TO_FAVORITES_SUCCESS, { id })
+          resolve(id)
+        },
+        (err) => {
+          commit(ADD_TO_FAVORITES_FAILURE, { err })
+          reject(err)
+        }
+      )
+    })
+  },
+  [REMOVE_FROM_FAVORITES] ({ commit }, { payload }) {
+    return new Promise((resolve, reject) => {
+      user.removeFromFavorites(
+        payload.id,
+        (id) => {
+          commit(REMOVE_FROM_FAVORITES_SUCCESS, { id })
+          resolve(id)
+        },
+        (err) => {
+          commit(REMOVE_FROM_FAVORITES_FAILURE, { err })
+          reject(err)
+        }
+      )
     })
   }
 }

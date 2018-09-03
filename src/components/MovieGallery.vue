@@ -13,12 +13,20 @@
         <img v-bind:src="movie.poster" />
         <h4 class="movie-title">{{movie.original_title}}</h4>
         <div class="actions" v-bind:class="{visible: isActionsVisible(index)}">
-          <div class="actions-wrapper">
-            <div class="favorites-button" v-on:mouseenter="fillFavoriteButton" v-on:mouseleave="unfillFavoriteButton">
-              <i v-bind:class="{hidden: !favoriteHovered}" class="fas fa-heart"></i>
-              <i v-bind:class="{hidden: favoriteHovered}" class="far fa-heart"></i>
+          <div class="actions-wrapper" v-if="isAuthenticated">
+            <div
+              class="favorites-button"
+              v-on:mouseenter="fillFavoriteButton"
+              v-on:mouseleave="unfillFavoriteButton"
+              v-on:click.stop="addToFavorites(movie.id)"
+            >
+              <i v-bind:class="{hidden: !favoriteHovered && !isMovieInFavorites(movie.id)}" class="fas fa-heart"></i>
+              <i v-bind:class="{hidden: favoriteHovered || isMovieInFavorites(movie.id)}" class="far fa-heart"></i>
             </div>
           </div>
+        </div>
+        <div v-if="movieMessage && addedMovieId === movie.id" class="alert-message animated">
+          <h4 class="alert">{{ movieMessage }}</h4>
         </div>
       </div>
     </div>
@@ -34,6 +42,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { addToFavorites, removeFromFavorites } from '../actions/creators'
 export default {
   name: 'movie-gallery',
   props: ['movies'],
@@ -42,7 +52,9 @@ export default {
       middleItem: this.movies.length / 2,
       actionsVisible: false,
       hoveredItem: null,
-      favoriteHovered: false
+      favoriteHovered: false,
+      movieMessage: null,
+      addedMovieId: null
     }
   },
   methods: {
@@ -71,12 +83,43 @@ export default {
     },
     showMovie: function (id) {
       this.$router.push({path: 'movie', query: { id }})
+    },
+    addToFavorites: function (id) {
+      const exists = this.isMovieInFavorites(id)
+      if (exists) {
+        this.$store.dispatch(removeFromFavorites(id)).then(id => {
+          this.movieMessage = 'Removed from favorites!'
+          this.addedMovieId = id
+          this.favoriteHovered = false
+
+          setTimeout(() => {
+            this.addedMovieId = null
+          }, 2000)
+        }).catch(err => {
+          this.movieMessage = err.message
+        })
+      } else {
+        this.$store.dispatch(addToFavorites(id)).then(id => {
+          this.movieMessage = 'Added to favorites!'
+          this.addedMovieId = id
+
+          setTimeout(() => {
+            this.addedMovieId = null
+          }, 2000)
+        }).catch(err => {
+          this.movieMessage = err.message
+        })
+      }
     }
   },
   computed: {
     getLeft: function () {
       return this.middleItem * -144
-    }
+    },
+    ...mapGetters('user', [
+      'isAuthenticated',
+      'isMovieInFavorites'
+    ])
   }
 }
 </script>
@@ -122,8 +165,8 @@ export default {
 
 .movie-item > .actions {
   position: absolute;
-  top: 0;
-  right: 15px;
+  top: 4px;
+  right: 19px;
   color: white;
   opacity: 0;
   pointer-events: none;
@@ -141,6 +184,7 @@ export default {
   right: 0;
 }
 
+/* .movie-item  */
 .movie-item > .actions > .actions-wrapper > .favorites-button > i {
   transition: 0.3s;
   position: absolute;
@@ -150,6 +194,11 @@ export default {
 .movie-item > .actions > .actions-wrapper > .favorites-button > i.hidden {
   opacity: 0;
   pointer-events: none;
+}
+
+.movie-item > .actions > .actions-wrapper > .favorites-button > i.visible {
+  opacity: 1;
+  pointer-events: initial;
 }
 
 .movie-item > .actions > .actions-wrapper > .favorites-button > .fas {
@@ -183,6 +232,7 @@ export default {
 .slide-buttons > .button.hidden {
   display: none;
 }
+
 .slide-buttons > .next {
   right: 40px;
 }
@@ -198,5 +248,53 @@ export default {
 
 .slide-buttons > .button > i.fas:hover {
   opacity: 0.8;
+}
+
+.movie-item > .alert-message {
+  position: absolute;
+  top: 50px;
+  right: -12px;
+  left: -12px;
+  max-width: 132px;
+  display: flex;
+  margin: auto 12px;
+  justify-content: center;
+  align-content: center;
+  background-color: #33C1E7;
+  border-radius: 8px;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.17);
+}
+
+.movie-item > .alert-message > .alert {
+  display: inline;
+  margin: 0;
+  padding: 5px 10px;
+  font-size: 8px;
+  font-weight: bold;
+  color: white;
+  white-space: nowrap;
+}
+
+.movie-item > .alert-message.animated {
+  animation: fadeInOutFromBelow 2s ease-in-out 0s forwards;
+}
+
+@keyframes fadeInOutFromBelow {
+  0% {
+    transform: translateY(200%);
+    opacity: 0;
+  }
+  30% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-200%);
+    opacity: 0;
+  }
 }
 </style>

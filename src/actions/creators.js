@@ -14,3 +14,13 @@ export const loginUser = userDetails => ({
 export const logoutUser = () => ({
   type: 'user/' + ACTIONS.LOGOUT_REQUEST
 })
+
+export const addToFavorites = (id) => ({
+  type: 'user/' + ACTIONS.ADD_TO_FAVORITES,
+  payload: { id }
+})
+
+export const removeFromFavorites = (id) => ({
+  type: 'user/' + ACTIONS.REMOVE_FROM_FAVORITES,
+  payload: { id }
+})

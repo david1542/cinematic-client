@@ -7,6 +7,7 @@ const crypto = require('crypto')
 const cors = require('cors')
 const config = require('./config')
 const User = require('./models/user')
+const auth = require('./middlewares/auth')
 
 mongoose.set('debug', true)
 mongoose.connect(config.MONGODB_URI, function (err) {
@@ -67,6 +68,38 @@ app.post('/login', function (req, res) {
         })
       })
     })
+})
+
+// ------------------------
+// Authenticated Routes
+// ------------------------
+app.post('/favorites', auth.tokenMiddleware, function (req, res) {
+  if (!req.body.id) return res.sendStatus(400)
+  const { user } = req
+  const { id } = req.body
+
+  user.favorites.push(id)
+  user.save(function (err, newUser) {
+    if (err || !newUser) return res.sendStatus(500)
+
+    res.json({ id })
+  })
+})
+
+app.delete('/favorites', auth.tokenMiddleware, function (req, res) {
+  if (!req.body.id) return res.sendStatus(400)
+  const { user } = req
+  const { id } = req.body
+
+  User.findByIdAndUpdate(user._id, {
+    $pull: {
+      'favorites': id
+    }
+  }).save(function (err, newUser) {
+    if (err || !newUser) return res.sendStatus(500)
+
+    res.json({ id })
+  })
 })
 
 app.listen(4000, function () {
