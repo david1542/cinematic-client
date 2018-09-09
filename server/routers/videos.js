@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const WebTorrent = require('webtorrent')
+const torrentSearch = require('torrent-search-api')
+const async = require('async')
 const auth = require('../middlewares/auth')
 const connectedUserClients = []
 
@@ -53,7 +55,9 @@ router.get('/', function (req, res) {
 
 router.get('/add/:magnet', function (req, res) {
   let magnet = req.params.magnet
-  const { client } = req.client
+  const {
+    client
+  } = req.client
 
   client.add(magnet, function (torrent) {
     let files = []
@@ -71,7 +75,9 @@ router.get('/add/:magnet', function (req, res) {
 
 router.get('/stream/:magnet/:file_name', function (req, res) {
   let magnet = req.params.magnet
-  const { client } = req.client
+  const {
+    client
+  } = req.client
 
   var tor = client.get(magnet)
 
@@ -120,8 +126,47 @@ router.get('/stream/:magnet/:file_name', function (req, res) {
   })
 })
 
+router.get('/torrents', async function (req, res) {
+  if (!req.query.term) return res.sendStatus(400)
+  const term = req.query.term
+
+  torrentSearch.enablePublicProviders()
+  torrentSearch.enableProvider('ThePirateBay')
+  torrentSearch.enableProvider('KickassTorrents')
+  torrentSearch.enableProvider('1337x')
+
+  const torrents = await torrentSearch.search(term, 'Movies')
+  const filteredTorrents = torrents.filter(torrent => (
+    torrent.title.toLowerCase().includes(term.toLowerCase())
+  )).sort(function (a, b) {
+    if (a.seeds > b.seeds) {
+      return -1
+    } else {
+      return 1
+    }
+  }).slice(0, 4)
+
+  if (!filteredTorrents) {
+    return res.sendStatus(500)
+  }
+
+  async.map(filteredTorrents, function (torrent, callback) {
+    torrentSearch.getMagnet(torrent).then(function (magnet) {
+      const infoHash = magnet.split('&')[0].split(':')[3]
+      torrent.infoHash = infoHash
+      callback(null, torrent)
+    })
+  }, function (err, torrents) {
+    if (err) return res.sendStatus(500)
+
+    res.json(torrents)
+  })
+})
+
 router.get('/list', function (req, res, next) {
-  const { client } = req.client
+  const {
+    client
+  } = req.client
   let torrent = client.torrents.reduce(function (array, data) {
     array.push({
       hash: data.infoHash
@@ -134,20 +179,26 @@ router.get('/list', function (req, res, next) {
 })
 
 router.get('/stats', function (req, res, next) {
-  const { stats } = req.client
+  const {
+    stats
+  } = req.client
   res.status(200)
   res.json(stats)
 })
 
 router.get('/errors', function (req, res, next) {
-  const { errorMessage } = req.client
+  const {
+    errorMessage
+  } = req.client
   res.status(200)
   res.json(errorMessage)
 })
 
 router.delete('/delete/:magnet', function (req, res, next) {
   let magnet = req.params.magnet
-  const { client } = req.client
+  const {
+    client
+  } = req.client
 
   client.remove(magnet, function () {
     res.status(200)

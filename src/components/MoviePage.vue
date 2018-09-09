@@ -5,20 +5,26 @@
         <div class='movie-overview'>
           <h1 class='title'>{{ movie.original_title }}</h1>
           <h2 class='description'>{{ movie.overview }}</h2>
+          <movie-torrents />
         </div>
       </div>
       <div v-if="trailer" class='trailer'>
-        <iframe frameborder='0' height='100%' width='100%' v-bind:src="trailer">
-        </iframe>
+        <!-- <iframe frameborder='0' height='100%' width='100%' v-bind:src="trailer">
+        </iframe> -->
       </div>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
+import videoApi from '../api/video'
 import { specificMovieUrl, generateImageUrl, generateVideosUrl, generateYoutubeUrl } from '../queries'
+import MovieTorrents from './MovieTorrents'
 export default {
   name: 'MoviePage',
+  components: {
+    'movie-torrents': MovieTorrents
+  },
   data: function () {
     return {
       movie: null,
@@ -28,7 +34,7 @@ export default {
   },
   mounted () {
     const { id } = this.$router.history.current.query
-    axios.get(specificMovieUrl(id)).then((res) => {
+    axios.get(specificMovieUrl(id)).then(res => {
       if (res.status === 200) {
         const movie = res.data
         movie.poster = generateImageUrl(300, movie.poster_path)
@@ -37,7 +43,7 @@ export default {
 
         return axios.get(generateVideosUrl(movie.id))
       } else throw new Error(res.status)
-    }).then((res) => {
+    }).then(res => {
       if (res.status === 200) {
         let video = res.data.results[0]
         res.data.results.forEach(function (item) {
@@ -47,7 +53,11 @@ export default {
         })
 
         this.trailer = generateYoutubeUrl(video.key)
+
+        return videoApi.getTorrents(this.movie.original_title)
       } else throw new Error(res.status)
+    }).then(res => {
+      console.log(res.data)
     })
   }
 }
@@ -106,6 +116,7 @@ export default {
 }
 
 .movie-container > .movie-overview {
+  position: relative;
   flex-basis: 70%;
   padding: 0 40px;
 }
