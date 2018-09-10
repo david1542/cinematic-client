@@ -1,7 +1,7 @@
 const User = require('../models/user')
 
 exports.tokenMiddleware = function (req, res, next) {
-  var token = req.headers['token']
+  var token = req.headers['token'] || req.query.token
 
   // Missing token
   if (!token || token.length !== 120) {

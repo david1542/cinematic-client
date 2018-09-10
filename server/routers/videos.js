@@ -4,14 +4,15 @@ const WebTorrent = require('webtorrent')
 const torrentSearch = require('torrent-search-api')
 const async = require('async')
 const auth = require('../middlewares/auth')
-const connectedUserClients = []
+const connectedUserClients = new Map()
 
 router.use(auth.tokenMiddleware)
 router.use(function (req, res, next) {
-  let client = connectedUserClients.find(userClient => userClient.userId === req.user._id)
+  let client = connectedUserClients.get(String(req.user._id))
 
   if (!client) {
     client = createClient(req.user._id)
+    connectedUserClients.set(String(client.userId), client)
   }
 
   req.client = client
@@ -49,48 +50,20 @@ function createClient (userId) {
   }
 }
 
-router.get('/', function (req, res) {
-  res.render('index')
-})
+router.get('/stream', function (req, res) {
+  const { client } = req.client
+  const { magnet } = req.query
+  let torrent = client.get(magnet)
 
-router.get('/add/:magnet', function (req, res) {
-  let magnet = req.params.magnet
-  const {
-    client
-  } = req.client
+  let file = torrent.files[0]
 
-  client.add(magnet, function (torrent) {
-    let files = []
-
-    torrent.files.forEach(function (data) {
-      files.push({
-        name: data.name,
-        length: data.length
-      })
-    })
-    res.status(200)
-    res.json(files)
-  })
-})
-
-router.get('/stream/:magnet/:file_name', function (req, res) {
-  let magnet = req.params.magnet
-  const {
-    client
-  } = req.client
-
-  var tor = client.get(magnet)
-
-  let file = {}
-
-  for (let i = 0; i < tor.files.length; i++) {
-    if (tor.files[i].name === req.params.file_name) {
-      file = tor.files[i]
+  for (let i = 1; i < torrent.files.length; i++) {
+    if (torrent.files[i].length > file.length) {
+      file = torrent.files[i]
     }
   }
 
   let range = req.headers.range
-
   if (!range) {
     let err = new Error('Wrong range')
     err.status = 416
@@ -111,7 +84,7 @@ router.get('/stream/:magnet/:file_name', function (req, res) {
     'Content-Type': 'video/mp4'
   }
 
-  res.set(206, head)
+  res.writeHead(206, head)
 
   let streamPosition = {
     start: start,
@@ -123,6 +96,18 @@ router.get('/stream/:magnet/:file_name', function (req, res) {
   stream.pipe(res)
   stream.on('error', function (err) {
     return res.status(500).json(err)
+  })
+})
+
+router.post('/add/:magnet', function (req, res) {
+  let magnet = req.params.magnet
+  const { client } = req.client
+
+  const torrent = client.get(magnet)
+  if (torrent) return res.json(magnet)
+
+  client.add(magnet, function () {
+    res.json(magnet)
   })
 })
 
