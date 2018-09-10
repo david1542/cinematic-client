@@ -1,25 +1,24 @@
 <template>
     <div class='movie-page'>
-      <div v-if="movie" class='movie-container'>
-        <img v-bind:src='movie.poster' alt=''>
+      <div v-if="specificMovie" class='movie-container'>
+        <img v-bind:src='specificMovie.poster' alt=''>
         <div class='movie-overview'>
-          <h1 class='title'>{{ movie.original_title }}</h1>
-          <h2 class='description'>{{ movie.overview }}</h2>
+          <h1 class='title'>{{ specificMovie.original_title }}</h1>
+          <h2 class='description'>{{ specificMovie.overview }}</h2>
           <movie-torrents />
         </div>
       </div>
-      <div v-if="trailer" class='trailer'>
-        <!-- <iframe frameborder='0' height='100%' width='100%' v-bind:src="trailer">
-        </iframe> -->
+      <div v-if="specificMovie" class='trailer'>
+        <iframe frameborder='0' height='100%' width='100%' v-bind:src="specificMovie.trailer">
+        </iframe>
       </div>
     </div>
 </template>
 
 <script>
-import axios from 'axios'
-import videoApi from '../api/video'
-import { specificMovieUrl, generateImageUrl, generateVideosUrl, generateYoutubeUrl } from '../queries'
 import MovieTorrents from './MovieTorrents'
+import { getMovie } from '../actions/creators'
+import { mapState } from 'vuex'
 export default {
   name: 'MoviePage',
   components: {
@@ -27,39 +26,17 @@ export default {
   },
   data: function () {
     return {
-      movie: null,
       trailer: null,
       error: null
     }
   },
   mounted () {
     const { id } = this.$router.history.current.query
-    axios.get(specificMovieUrl(id)).then(res => {
-      if (res.status === 200) {
-        const movie = res.data
-        movie.poster = generateImageUrl(300, movie.poster_path)
-
-        this.movie = movie
-
-        return axios.get(generateVideosUrl(movie.id))
-      } else throw new Error(res.status)
-    }).then(res => {
-      if (res.status === 200) {
-        let video = res.data.results[0]
-        res.data.results.forEach(function (item) {
-          if (item.size >= video.size && item.type === 'Trailer') {
-            video = item
-          }
-        })
-
-        this.trailer = generateYoutubeUrl(video.key)
-
-        return videoApi.getTorrents(this.movie.original_title)
-      } else throw new Error(res.status)
-    }).then(res => {
-      console.log(res.data)
-    })
-  }
+    this.$store.dispatch(getMovie(id))
+  },
+  computed: mapState('movie', [
+    'specificMovie'
+  ])
 }
 </script>
 

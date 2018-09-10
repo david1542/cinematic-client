@@ -24,3 +24,12 @@ export const removeFromFavorites = (id) => ({
   type: 'user/' + ACTIONS.REMOVE_FROM_FAVORITES,
   payload: { id }
 })
+
+export const getPopularMovies = () => ({
+  type: 'movie/' + ACTIONS.FETCH_POPULAR_MOVIES
+})
+
+export const getMovie = (id) => ({
+  type: 'movie/' + ACTIONS.FETCH_SPECIFIC_MOVIE,
+  payload: { id }
+})

@@ -2,7 +2,7 @@
   <div class="home-page">
     <nav-bar />
     <h2 class="popular-movies">Popular Movies</h2>
-    <movie-gallery v-if="movies" v-bind:movies="movies" />
+    <movie-gallery v-if="popularMovies" v-bind:movies="popularMovies" />
     <h2 class="page-title">Search movies now for free!</h2>
     <search-bar v-on:search-movie="sendQuery" />
     <div class="register-box">
@@ -14,12 +14,11 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { mapState } from 'vuex'
 import MovieGallery from './MovieGallery'
 import SearchBar from './SearchBar'
 import Navbar from './Navbar'
-import { popularMoviesUrl } from '../queries'
-import { MOVIE_IMG_ROOT } from '../config'
+import { getPopularMovies } from '../actions/creators'
 
 export default {
   name: 'HomePage',
@@ -28,33 +27,27 @@ export default {
     'search-bar': SearchBar,
     'nav-bar': Navbar
   },
-  data () {
-    return {
-      movies: null,
-      error: null
-    }
-  },
+  // data () {
+  //   return {
+  //     movies: null,
+  //     error: null
+  //   }
+  // },
   mounted () {
-    axios.get(popularMoviesUrl()).then(res => {
-      if (res.status !== 200) throw new Error('Failed to fetch')
-
-      this.movies = res.data.results.map(movie => {
-        movie.poster = this.generateImage(movie.poster_path, 300)
-        return movie
-      })
-    })
+    // movie.getPopularMovies
+    this.$store.dispatch(getPopularMovies())
   },
   methods: {
-    generateImage: function (poster, size) {
-      return MOVIE_IMG_ROOT + 'w' + size + '/' + poster
-    },
     sendQuery: function (query) {
       this.$router.push({path: 'search', query: { query }})
     },
     moveToRegister: function () {
       this.$router.push('register')
     }
-  }
+  },
+  computed: mapState('movie', [
+    'popularMovies'
+  ])
 }
 </script>
 

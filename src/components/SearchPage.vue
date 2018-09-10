@@ -25,9 +25,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { moviesQueryUrl, generateImageUrl } from '../queries'
-
 export default {
   name: 'SearchPage',
   data: function () {
@@ -37,15 +34,8 @@ export default {
     }
   },
   mounted: function () {
-    const { query } = this.$router.history.current.query
-    axios.get(moviesQueryUrl(query)).then(res => {
-      if (res.status === 200) {
-        this.movies = res.data.results.map(movie => {
-          movie.poster = generateImageUrl(300, movie.poster_path)
-          return movie
-        })
-      } else throw new Error('Could not search')
-    }).catch(err => console.log(err))
+    // const { query } = this.$router.history.current.query
+    // movie.search
   },
   methods: {
     showMovie: function (id) {
