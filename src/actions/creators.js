@@ -33,3 +33,8 @@ export const getMovie = (id) => ({
   type: 'movie/' + ACTIONS.FETCH_SPECIFIC_MOVIE,
   payload: { id }
 })
+
+export const searchMovies = (term) => ({
+  type: 'movie/' + ACTIONS.SEARCH_TERM,
+  payload: { term }
+})

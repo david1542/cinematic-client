@@ -8,7 +8,7 @@
     <div class="movie-list">
       <div
         class="movie-item"
-        v-for="movie in movies"
+        v-for="movie in searchMovies"
         v-bind:key="movie.id"
       >
         <div class="movie-img">
@@ -25,23 +25,23 @@
 </template>
 
 <script>
+import { searchMovies } from '../actions/creators'
+import { mapState } from 'vuex'
+
 export default {
   name: 'SearchPage',
-  data: function () {
-    return {
-      movies: null,
-      err: null
-    }
-  },
   mounted: function () {
-    // const { query } = this.$router.history.current.query
-    // movie.search
+    const { query } = this.$router.history.current.query
+    this.$store.dispatch(searchMovies(query))
   },
   methods: {
     showMovie: function (id) {
       this.$router.push({path: 'movie', query: { id }})
     }
-  }
+  },
+  computed: mapState('movie', [
+    'searchMovies'
+  ])
 }
 </script>
 

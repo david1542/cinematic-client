@@ -2,7 +2,8 @@ import movie from '@/api/movie'
 import { FETCH_POPULAR_MOVIES, FETCH_POPULAR_MOVIES_SUCCESS,
   FETCH_POPULAR_MOVIES_FAILURE, FETCH_SPECIFIC_MOVIE,
   FETCH_SPECIFIC_MOVIE_SUCCESS, FETCH_SPECIFIC_MOVIE_FAILURE,
-  RESET_SPECIFIC_MOVIE } from '../../actions'
+  RESET_SPECIFIC_MOVIE, SEARCH_TERM, SEARCH_TERM_SUCCESS,
+  SEARCH_TERM_FAILURE} from '../../actions'
 
 const state = {
   popularMovies: null,
@@ -26,6 +27,12 @@ const mutations = {
   },
   [RESET_SPECIFIC_MOVIE] (state) {
     state.specificMovie = null
+  },
+  [SEARCH_TERM_SUCCESS] (state, { movies }) {
+    state.searchMovies = movies
+  },
+  [SEARCH_TERM_FAILURE] (state, { err }) {
+    state.searchTermError = err
   }
 }
 
@@ -59,6 +66,21 @@ const actions = {
         },
         (err) => {
           commit(FETCH_SPECIFIC_MOVIE_FAILURE, { err })
+          reject(err)
+        }
+      )
+    })
+  },
+  [SEARCH_TERM] ({ commit }, { payload }) {
+    return new Promise((resolve, reject) => {
+      movie.search(
+        payload.term,
+        (movies) => {
+          commit(SEARCH_TERM_SUCCESS, { movies })
+          resolve(movies)
+        },
+        (err) => {
+          commit(SEARCH_TERM_FAILURE, { err })
           reject(err)
         }
       )
