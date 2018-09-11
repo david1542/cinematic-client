@@ -5,7 +5,15 @@
         <div class='movie-overview'>
           <h1 class='title'>{{ specificMovie.original_title }}</h1>
           <h2 class='description'>{{ specificMovie.overview }}</h2>
-          <movie-torrents />
+          <movie-torrents v-if="torrents && torrents.length > 0" v-bind:torrents="torrents" />
+          <div v-else-if="torrents && torrents.length === 0" class="message">
+            <i class="fas fa-exclamation-circle"></i>
+            No Available Torrents
+          </div>
+          <div v-else class="message">
+            <i class="fas fa-spinner fa-spin"></i>
+            Loading Torrents...
+          </div>
         </div>
       </div>
       <div v-if="specificMovie" class='trailer'>
@@ -35,7 +43,8 @@ export default {
     this.$store.dispatch(getMovie(id))
   },
   computed: mapState('movie', [
-    'specificMovie'
+    'specificMovie',
+    'torrents'
   ])
 }
 </script>
@@ -110,5 +119,19 @@ export default {
   font-size: 20px;
   font-weight: normal;
   text-align: left;
+}
+
+.movie-container > .movie-overview > .message {
+  position: absolute;
+  color: white;
+  font-weight: bold;
+  bottom: 0;
+  left: 0;
+  padding-left: 40px;
+}
+
+.movie-container > .movie-overview > .message > .fas {
+  font-size: 20px;
+  margin-right: 4px;
 }
 </style>

@@ -5,11 +5,6 @@
     <movie-gallery v-if="popularMovies" v-bind:movies="popularMovies" />
     <h2 class="page-title">Search movies now for free!</h2>
     <search-bar v-on:search-movie="sendQuery" />
-    <div class="register-box">
-      <h2 class="register-title">Don't have an account yet? Register now for free!</h2>
-      <!-- <button class="btn btn-primary" v-on:click="moveToRegister">Register</button> -->
-      <router-link to="/register" class="btn btn-primary">Register</router-link>
-    </div>
   </div>
 </template>
 
@@ -77,13 +72,5 @@ export default {
 .home-page > .popular-movies {
   margin-top: 0;
   margin: 40px 0 100px 0;
-}
-
-.home-page > .register-box {
-  margin-top: 100px;
-}
-.home-page > .register-box > .register-title {
-  color: white;
-  font-size: 23px;
 }
 </style>

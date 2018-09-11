@@ -1,6 +1,7 @@
 import {
   OMDB_ROOT,
-  API_KEY
+  API_KEY,
+  SERVER_URL
 } from './config'
 
 export const moviesQueryUrl = (query) => {
@@ -25,4 +26,12 @@ export const generateVideosUrl = (id) => {
 
 export const generateYoutubeUrl = (key) => {
   return 'https://www.youtube.com/embed/' + key + '?autoplay=1&controls=0&showinfo=0&loop=1&showinfo=0&autohide=1&iv_load_policy=3'
+}
+
+export const getTorrentsUrl = (title) => {
+  return SERVER_URL + '/videos/torrents?term=' + title
+}
+
+export const addTorrentMagnet = (magnet) => {
+  return SERVER_URL + '/videos/add/' + magnet
 }

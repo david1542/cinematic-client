@@ -34,7 +34,17 @@ export const getMovie = (id) => ({
   payload: { id }
 })
 
+export const getMovies = (ids) => ({
+  type: 'movie/' + ACTIONS.GET_MOVIES,
+  payload: { ids }
+})
+
 export const searchMovies = (term) => ({
   type: 'movie/' + ACTIONS.SEARCH_TERM,
   payload: { term }
+})
+
+export const addTorrent = (hash) => ({
+  type: 'movie/' + ACTIONS.ADD_TORRENT,
+  payload: { hash }
 })

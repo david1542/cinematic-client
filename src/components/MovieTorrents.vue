@@ -1,28 +1,53 @@
 <template>
   <div class="container">
-    <select class="form-control" @change="changeTorrent">
-      <option v-bind:key="torrent.infoHash" v-for="torrent in torrents">{{ torrent.infoHash }}</option>
+    <select class="form-control" v-model="selectedTorrent">
+      <option
+        v-bind:key="torrent.infoHash"
+        v-bind:value="torrent"
+        v-for="torrent in torrents"
+      >
+        {{ torrent.title }}
+      </option>
     </select>
-    <button class="btn btn-primary btn-sm" @click="chooseTorrent">Choose Torrent</button>
+    <button class="btn btn-primary" @click="chooseTorrent" v-if="!readyToWatch">
+      <span v-if="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        Adding Torrent
+      </span>
+      <span v-else>
+        Choose Torrent
+      </span>
+    </button>
+    <button class="btn btn-success" @click="watchMovie" v-else>
+      Watch Movie
+    </button>
   </div>
 </template>
 
 <script>
+import { addTorrent } from '../actions/creators'
 export default {
   name: 'MovieTorrents',
   props: ['torrents'],
   data () {
     return {
-      selectedTorrent: null
+      selectedTorrent: this.torrents[0],
+      readyToWatch: false,
+      loading: false
     }
   },
   methods: {
-    changeTorrent (torrent) {
-      console.log(torrent)
-    //   this.selectedTorrent = torrent
+    watchMovie () {
+      this.$router.push('/watch')
     },
     chooseTorrent () {
-      console.log(this.selectedTorrent)
+      this.loading = true
+      this.$store.dispatch(addTorrent(this.selectedTorrent.infoHash)).then(() => {
+        this.loading = false
+        this.readyToWatch = true
+      }).catch(() => {
+        this.readyToWatch = false
+      })
     }
   }
 }
@@ -44,5 +69,8 @@ select.form-control {
 }
 button.btn-primary {
   height: 37px;
+}
+button.btn-primary .fa-spinner {
+  margin-right: 3px;
 }
 </style>

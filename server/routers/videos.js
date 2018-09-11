@@ -40,6 +40,7 @@ function createClient (userId) {
       downloadSpeed: client.downloadSpeed,
       ratio: client.ratio
     }
+    console.log(stats)
   })
 
   return {

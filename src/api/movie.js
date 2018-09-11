@@ -1,24 +1,34 @@
 import axios from 'axios'
+import async from 'async'
 import { popularMoviesUrl, specificMovieUrl,
   generateImageUrl, generateVideosUrl,
-  generateYoutubeUrl, moviesQueryUrl } from '../queries'
+  generateYoutubeUrl, moviesQueryUrl,
+  addTorrentMagnet } from '../queries'
 import {
   SERVER_URL
 } from '../config'
 
 export default {
+  addTorrent (hash, success, failure) {
+    const token = localStorage.getItem('user-token')
+    axios({
+      method: 'POST',
+      url: addTorrentMagnet(hash),
+      headers: { token }
+    }).then(res => {
+      success(res.data)
+    }).catch(err => {
+      failure(err)
+    })
+  },
   getTorrents (term, success, failure) {
     const token = localStorage.getItem('user-token')
     axios({
       method: 'GET',
       url: SERVER_URL + '/videos/torrents?term=' + term,
-      headers: {
-        token
-      }
+      headers: { token }
     }).then(res => {
-      if (res.status === 200) {
-        success(res.data)
-      }
+      success(res.data)
     }).catch(err => {
       failure(err)
     })
@@ -56,6 +66,22 @@ export default {
       success(foundMovie)
     }).catch(err => {
       failure(err)
+    })
+  },
+  getMovies (ids, success, failure) {
+    async.map(ids, (id, callback) => {
+      axios.get(specificMovieUrl(id)).then(res => {
+        const movie = res.data
+        movie.poster = generateImageUrl(200, movie.poster_path)
+
+        callback(null, movie)
+      }).catch(err => {
+        callback(err)
+      })
+    }, (err, result) => {
+      if (err) return failure(err)
+
+      success(result)
     })
   },
   search (term, success, failure) {

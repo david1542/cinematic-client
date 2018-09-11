@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import HomePage from '@/components/HomePage'
 import SearchPage from '@/components/SearchPage'
 import MoviePage from '@/components/MoviePage'
+import MoviePlayer from '@/components/MoviePlayer'
+import FavoritesPage from '@/components/FavoritesPage'
 import RegisterPage from '@/components/RegisterPage'
 import LoginPage from '@/components/LoginPage'
 import store from '../store'
@@ -30,7 +32,8 @@ export default new Router({
     {
       path: '/',
       name: 'HomePage',
-      component: HomePage
+      component: HomePage,
+      beforeEnter: ifAuthenticated
     },
     {
       path: '/search',
@@ -43,6 +46,20 @@ export default new Router({
       path: '/movie',
       name: 'MoviePage',
       component: MoviePage,
+      beforeEnter: ifAuthenticated,
+      props: true
+    },
+    {
+      path: '/watch',
+      name: 'MoviePlayer',
+      component: MoviePlayer,
+      beforeEnter: ifAuthenticated,
+      props: true
+    },
+    {
+      path: '/favorites',
+      name: 'FavoritesPage',
+      component: FavoritesPage,
       beforeEnter: ifAuthenticated,
       props: true
     },
