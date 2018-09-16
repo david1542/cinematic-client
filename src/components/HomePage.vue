@@ -22,14 +22,7 @@ export default {
     'search-bar': SearchBar,
     'nav-bar': Navbar
   },
-  // data () {
-  //   return {
-  //     movies: null,
-  //     error: null
-  //   }
-  // },
   mounted () {
-    // movie.getPopularMovies
     this.$store.dispatch(getPopularMovies())
   },
   methods: {
