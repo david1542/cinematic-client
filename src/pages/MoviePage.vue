@@ -5,7 +5,7 @@
         <div class='movie-overview'>
           <h1 class='title'>{{ specificMovie.original_title }}</h1>
           <h2 class='description'>{{ specificMovie.overview }}</h2>
-          <movie-torrents v-if="torrents && torrents.length > 0" v-bind:torrents="torrents" />
+          <MovieTorrents v-if="torrents && torrents.length > 0" v-bind:torrents="torrents" />
           <div v-else-if="torrents && torrents.length === 0" class="message">
             <i class="fas fa-exclamation-circle"></i>
             No Available Torrents
@@ -30,7 +30,7 @@ import { mapState } from 'vuex'
 export default {
   name: 'MoviePage',
   components: {
-    'movie-torrents': MovieTorrents
+    MovieTorrents
   },
   data: function () {
     return {

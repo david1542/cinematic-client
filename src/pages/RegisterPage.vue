@@ -1,6 +1,6 @@
 <template>
   <div class="register-page">
-    <nav-bar />
+    <Navbar />
     <h2>Sign up today for free!</h2>
     <form class="register-form">
       <div class="form-group">
@@ -40,7 +40,7 @@ import Navbar from '@/components/Navbar'
 export default {
   name: 'RegisterPage',
   components: {
-    'nav-bar': Navbar
+    Navbar
   },
   data () {
     return {

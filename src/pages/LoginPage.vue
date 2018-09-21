@@ -1,6 +1,6 @@
 <template>
   <div class="login-page">
-    <nav-bar />
+    <Navbar />
     <h2>Already have an account? Sign in!</h2>
     <form class="login-form">
       <div class="form-group">
@@ -28,7 +28,7 @@ import Navbar from '@/components/Navbar'
 export default {
   name: 'LoginPage',
   components: {
-    'nav-bar': Navbar
+    Navbar
   },
   data () {
     return {

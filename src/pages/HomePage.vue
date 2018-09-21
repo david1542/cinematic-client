@@ -1,10 +1,10 @@
 <template>
   <div class="home-page">
-    <nav-bar />
+    <Navbar />
     <h2 class="popular-movies">Popular Movies</h2>
-    <movie-gallery v-if="popularMovies" v-bind:movies="popularMovies" />
+    <MovieGallery v-if="popularMovies" v-bind:movies="popularMovies" />
     <h2 class="page-title">Search movies now for free!</h2>
-    <search-bar v-on:search-movie="sendQuery" />
+    <SearchBar v-on:search-movie="sendQuery" />
   </div>
 </template>
 
@@ -18,9 +18,9 @@ import { getPopularMovies } from '../actions/creators'
 export default {
   name: 'HomePage',
   components: {
-    'movie-gallery': MovieGallery,
-    'search-bar': SearchBar,
-    'nav-bar': Navbar
+    MovieGallery,
+    SearchBar,
+    Navbar
   },
   mounted () {
     this.$store.dispatch(getPopularMovies())
