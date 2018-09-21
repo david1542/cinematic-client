@@ -6,20 +6,11 @@
       </h1>
     </div>
     <div class="movie-list">
-      <div
-        class="movie-item"
+      <MovieListItem
         v-for="movie in searchMovies"
-        v-bind:key="movie.id"
-      >
-        <div class="movie-img">
-          <img v-bind:src="movie.poster" alt="Movie Poster" />
-        </div>
-        <div class="content">
-          <h2 class="title">{{ movie.original_title }}</h2>
-          <p class="overview">{{ movie.overview }}</p>
-          <button class="btn btn-primary" v-on:click="showMovie(movie.id)">Explore More!</button>
-        </div>
-      </div>
+        :key="movie.id"
+        :movie="movie"
+      />
     </div>
   </div>
 </template>
@@ -27,17 +18,15 @@
 <script>
 import { searchMovies } from '../actions/creators'
 import { mapState } from 'vuex'
-
+import MovieListItem from '@/components/MovieListItem'
 export default {
   name: 'SearchPage',
+  components: {
+    MovieListItem
+  },
   mounted: function () {
     const { query } = this.$router.history.current.query
     this.$store.dispatch(searchMovies(query))
-  },
-  methods: {
-    showMovie: function (id) {
-      this.$router.push({path: 'movie', query: { id }})
-    }
   },
   computed: mapState('movie', [
     'searchMovies'

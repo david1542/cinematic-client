@@ -1,0 +1,66 @@
+<template>
+    <div class="movie-item">
+      <div class="movie-img">
+        <img v-bind:src="movie.poster" alt="Movie Poster" />
+      </div>
+      <div class="content">
+        <h2 class="title">{{ movie.original_title }}</h2>
+        <p class="overview">{{ movie.overview }}</p>
+        <button class="btn btn-primary" v-on:click="showMovie(movie.id)">Explore More!</button>
+      </div>
+    </div>
+</template>
+
+<script>
+export default {
+  props: {
+    movie: {
+      required: true,
+      type: Object
+    }
+  },
+  methods: {
+    showMovie: function (id) {
+      this.$router.push({path: 'movie', query: { id }})
+    }
+  }
+}
+</script>
+
+<style>
+
+.movie-item {
+  display: flex;
+  margin-bottom: 40px;
+  height: 400px;
+}
+
+.movie-item > .movie-img {
+  height: 100%;
+  margin-right: 20px;
+  flex-basis: 20%;
+}
+.movie-item .movie-img > img {
+  /* width: 250px; */
+  width: 100%;
+  height: 100%;
+}
+
+.movie-item > .content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-basis: 80%;
+}
+.movie-item > .content > .title {
+  color: white;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.movie-item > .content > .overview {
+  color: white;
+  font-size: 18px;
+  text-align: left;
+}
+</style>
