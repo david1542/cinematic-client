@@ -24,7 +24,7 @@
 
 <script>
 import { loginUser } from '../actions/creators'
-import Navbar from './Navbar'
+import Navbar from '@/components/Navbar'
 export default {
   name: 'LoginPage',
   components: {

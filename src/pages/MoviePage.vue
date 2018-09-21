@@ -17,14 +17,14 @@
         </div>
       </div>
       <div v-if="specificMovie" class='trailer'>
-        <!-- <iframe frameborder='0' height='100%' width='100%' v-bind:src="specificMovie.trailer">
-        </iframe> -->
+        <iframe frameborder='0' height='100%' width='100%' v-bind:src="specificMovie.trailer">
+        </iframe>
       </div>
     </div>
 </template>
 
 <script>
-import MovieTorrents from './MovieTorrents'
+import MovieTorrents from '@/components/MovieTorrents'
 import { getMovie } from '../actions/creators'
 import { mapState } from 'vuex'
 export default {

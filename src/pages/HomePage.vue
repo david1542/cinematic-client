@@ -10,9 +10,9 @@
 
 <script>
 import { mapState } from 'vuex'
-import MovieGallery from './MovieGallery'
-import SearchBar from './SearchBar'
-import Navbar from './Navbar'
+import MovieGallery from '@/components/MovieGallery'
+import SearchBar from '@/components/SearchBar'
+import Navbar from '@/components/Navbar'
 import { getPopularMovies } from '../actions/creators'
 
 export default {

@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HomePage from '@/components/HomePage'
-import SearchPage from '@/components/SearchPage'
-import MoviePage from '@/components/MoviePage'
-import MoviePlayer from '@/components/MoviePlayer'
-import FavoritesPage from '@/components/FavoritesPage'
-import RegisterPage from '@/components/RegisterPage'
-import LoginPage from '@/components/LoginPage'
+import HomePage from '@/pages/HomePage'
+import SearchPage from '@/pages/SearchPage'
+import MoviePage from '@/pages/MoviePage'
+import MoviePlayerPage from '@/pages/MoviePlayerPage'
+import FavoritesPage from '@/pages/FavoritesPage'
+import RegisterPage from '@/pages/RegisterPage'
+import LoginPage from '@/pages/LoginPage'
 import store from '../store'
 
 Vue.use(Router)
@@ -52,7 +52,7 @@ export default new Router({
     {
       path: '/watch',
       name: 'MoviePlayer',
-      component: MoviePlayer,
+      component: MoviePlayerPage,
       beforeEnter: ifAuthenticated,
       props: true
     },
