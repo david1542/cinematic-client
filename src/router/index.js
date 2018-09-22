@@ -7,6 +7,7 @@ import MoviePlayerPage from '@/pages/MoviePlayerPage'
 import FavoritesPage from '@/pages/FavoritesPage'
 import RegisterPage from '@/pages/RegisterPage'
 import LoginPage from '@/pages/LoginPage'
+import NotFoundPage from '@/pages/NotFoundPage'
 import store from '../store'
 
 Vue.use(Router)
@@ -76,6 +77,11 @@ export default new Router({
       component: LoginPage,
       beforeEnter: ifNotAuthenticated,
       props: true
+    },
+    {
+      path: '*',
+      name: 'NotFound',
+      component: NotFoundPage
     }
   ]
 })
