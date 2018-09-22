@@ -29,6 +29,10 @@ export const getPopularMovies = () => ({
   type: 'movie/' + ACTIONS.FETCH_POPULAR_MOVIES
 })
 
+export const getMoviesCategories = () => ({
+  type: 'movie/' + ACTIONS.GET_MOVIES_CATEGORIES
+})
+
 export const getMovie = (id) => ({
   type: 'movie/' + ACTIONS.FETCH_SPECIFIC_MOVIE,
   payload: { id }

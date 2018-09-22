@@ -2,7 +2,7 @@
   <b-navbar toggleable="md" type="dark" variant="light">
     <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
     <b-navbar-brand href="#">
-      <router-link to="/">
+      <router-link :to="{name: 'HomePage'}">
         Movies - Vue.js
         <i class="fas fa-film"></i>
       </router-link>
@@ -10,12 +10,12 @@
     <b-collapse is-nav id="nav_collapse">
       <b-navbar-nav>
         <b-nav-item class="text-light">
-          <router-link to="/favorites">
+          <router-link :to="{name: 'FavoritesPage'}">
             Favorites
           </router-link>
         </b-nav-item>
         <b-nav-item class="text-light">
-          <router-link to="/search">
+          <router-link :to="{name: 'SearchPage'}">
             Search
           </router-link>
         </b-nav-item>

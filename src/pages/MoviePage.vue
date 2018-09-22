@@ -15,6 +15,13 @@
           Loading Torrents...
         </div>
       </div>
+      <LikeButton
+        class="like-button"
+        :isFavorite="isFavorite"
+        @click="addToFavorites"
+      >
+        <BigHeartButton :isActive="isFavorite" />
+      </LikeButton>
     </div>
     <div v-if="specificMovie" class='trailer'>
       <iframe frameborder='0' height='100%' width='100%' :src="specificMovie.trailer">
@@ -24,13 +31,22 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import MovieTorrents from '@/components/MovieTorrents'
-import { getMovie } from '../actions/creators'
-import { mapState } from 'vuex'
+import LikeButton from '@/components/LikeButton'
+import BigHeartButton from '@/components/BigHeartButton'
+import { getMovie, addToFavorites, removeFromFavorites } from '@/actions/creators'
 export default {
   name: 'MoviePage',
+  props: {
+    id: {
+      required: true
+    }
+  },
   components: {
-    MovieTorrents
+    MovieTorrents,
+    LikeButton,
+    BigHeartButton
   },
   data: function () {
     return {
@@ -39,17 +55,40 @@ export default {
     }
   },
   mounted () {
-    const { id } = this.$router.history.current.query
-    this.$store.dispatch(getMovie(id))
+    this.$store.dispatch(getMovie(this.id))
   },
-  computed: mapState('movie', [
-    'specificMovie',
-    'torrents'
-  ])
+  methods: {
+    addToFavorites () {
+      const exists = this.isMovieInFavorites(this.id)
+      if (exists) {
+        this.$store.dispatch(removeFromFavorites(this.id))
+      } else {
+        this.$store.dispatch(addToFavorites(this.id))
+      }
+    }
+  },
+  computed: {
+    ...mapState('movie', [
+      'specificMovie',
+      'torrents'
+    ]),
+    ...mapGetters('user', [
+      'isMovieInFavorites'
+    ]),
+    isFavorite () {
+      return this.isMovieInFavorites(this.specificMovie.id)
+    }
+  }
 }
 </script>
 
-<style>
+<style scoped>
+.like-button {
+  position: absolute;
+  right: 65px;
+  top: 40px;
+  cursor: pointer;
+}
 .trailer {
   position: fixed;
   z-index: -1;
@@ -72,6 +111,7 @@ export default {
   width: 100%;
   min-height: 470px;
   display: flex;
+  position: relative;
   justify-content: flex-start;
   padding: 60px 40px;
   flex-wrap: wrap;

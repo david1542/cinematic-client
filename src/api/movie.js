@@ -3,7 +3,7 @@ import async from 'async'
 import { popularMoviesUrl, specificMovieUrl,
   generateImageUrl, generateVideosUrl,
   generateYoutubeUrl, moviesQueryUrl,
-  addTorrentMagnet } from '../queries'
+  addTorrentMagnet, getGenres, getMoviesByGenre } from '../queries'
 import {
   SERVER_URL
 } from '../config'
@@ -44,6 +44,32 @@ export default {
     }).catch(err => {
       failure(err)
     })
+  },
+  getMoviesGenres (success, failure) {
+    axios.get(getGenres()).then(res => {
+      const moviePromises = []
+      res.data.genres.forEach(genre => {
+        const fetch = new Promise((resolve, reject) => {
+          axios.get(getMoviesByGenre(genre.id)).then(res => {
+            const movies = res.data.results.map(movie => {
+              movie.poster = generateImageUrl(300, movie.poster_path)
+              return movie
+            })
+            resolve({
+              name: genre.name,
+              movies
+            })
+          }).catch(err => reject(err))
+        })
+
+        moviePromises.push(fetch)
+      })
+
+      return Promise.all(moviePromises)
+    }).then(categories => {
+      debugger
+      success(categories)
+    }).catch(err => failure(err))
   },
   getSpecificMovie (id, success, failure) {
     let foundMovie

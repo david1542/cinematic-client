@@ -57,7 +57,7 @@ export default {
     },
     showMovie: function (eventData) {
       const { id } = eventData
-      this.$router.push({path: 'movie', query: { id }})
+      this.$router.push({name: 'MoviePage', params: { id }})
     },
     addToFavorites: function (eventData) {
       const { id } = eventData

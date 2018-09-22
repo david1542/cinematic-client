@@ -1,6 +1,6 @@
 <template>
   <AppPage>
-    <h2>Already have an account? Sign in!</h2>
+    <h2>Sign in to your account</h2>
     <form
       class="login-form"
       @keydown.enter="login"
@@ -59,7 +59,7 @@ export default {
       }
 
       this.$store.dispatch(loginUser(userDetails)).then(() => {
-        this.$router.push('/')
+        this.$router.push({name: 'HomePage'})
       }).catch(err => {
         this.error = err
       })

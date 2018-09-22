@@ -43,7 +43,7 @@ export default new Router({
       props: true
     },
     {
-      path: '/movie',
+      path: '/movie/:id',
       name: 'MoviePage',
       component: MoviePage,
       beforeEnter: ifAuthenticated,

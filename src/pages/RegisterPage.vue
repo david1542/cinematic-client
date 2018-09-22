@@ -59,7 +59,7 @@ export default {
       }
 
       this.$store.dispatch(registerUser(userDetails)).then(() => {
-        this.$router.push('/')
+        this.$router.push({name: 'HomePage'})
       }).catch(err => {
         this.error = err
       })

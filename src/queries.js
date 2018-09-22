@@ -12,6 +12,14 @@ export const popularMoviesUrl = () => {
   return 'https://api.themoviedb.org/3/movie/popular?api_key=' + API_KEY
 }
 
+export const getGenres = () => {
+  return OMDB_ROOT + 'genre/movie/list?api_key=' + API_KEY
+}
+
+export const getMoviesByGenre = (genreId) => {
+  return OMDB_ROOT + 'discover/movie?with_genres=' + genreId + '&api_key=' + API_KEY
+}
+
 export const generateImageUrl = (size, name) => {
   return 'https://image.tmdb.org/t/p/w' + size + '/' + name
 }

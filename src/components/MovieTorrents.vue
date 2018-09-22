@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     watchMovie () {
-      this.$router.push('/watch')
+      this.$router.push({name: 'MoviePlayer'})
     },
     chooseTorrent () {
       this.loading = true

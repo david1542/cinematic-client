@@ -10,28 +10,20 @@
         <h4 class="movie-title">{{movie.original_title}}</h4>
         <div class="actions" :class="{visible: actionsVisible}">
           <div class="actions-wrapper" v-if="isAuthenticated">
-            <div
-              class="favorites-button"
-              @mouseenter="fillFavoriteButton"
-              @mouseleave="unfillFavoriteButton"
-              @click.stop="addToFavorites"
-            >
-              <i
-                :class="{hidden: !favoriteHovered && !isFavorite}"
-                class="fas fa-heart"></i>
-              <i
-                :class="{hidden: favoriteHovered || isFavorite}"
-                class="far fa-heart"></i>
-            </div>
+            <LikeButton @click="addToFavorites">
+              <HeartButton :isActive="isFavorite" />
+            </LikeButton>
           </div>
         </div>
-        <div v-if="actionMessage && addedMovieId === id" class="alert-message animated">
+        <div v-if="actionMessage && addedMovieId === movie.id" class="alert-message animated">
           <h4 class="alert">{{ actionMessage }}</h4>
         </div>
       </div>
 </template>
 
 <script>
+import LikeButton from './LikeButton'
+import HeartButton from './HeartButton'
 export default {
   props: {
     movie: {
@@ -58,35 +50,27 @@ export default {
       required: true
     }
   },
+  components: {
+    LikeButton,
+    HeartButton
+  },
   data () {
     return {
-      actionsVisible: false,
-      favoriteHovered: false,
-      id: this.movie.id
+      actionsVisible: false
     }
   },
   methods: {
     addToFavorites () {
-      this.$emit('favorite', { id: this.id })
-
-      if (this.isFavorite) {
-        this.unfillFavoriteButton()
-      }
+      this.$emit('favorite', { id: this.movie.id })
     },
     showMovie () {
-      this.$emit('click', { id: this.id })
+      this.$emit('click', { id: this.movie.id })
     },
     showActions () {
       this.actionsVisible = true
     },
     hideActions () {
       this.actionsVisible = false
-    },
-    fillFavoriteButton () {
-      this.favoriteHovered = true
-    },
-    unfillFavoriteButton () {
-      this.favoriteHovered = false
     }
   }
 }
@@ -139,27 +123,6 @@ export default {
   position: relative;
   top: 0;
   right: 0;
-}
-
-/* .movie-item  */
-.movie-item > .actions > .actions-wrapper > .favorites-button > i {
-  transition: 0.3s;
-  position: absolute;
-  font-size: 15px;
-}
-
-.movie-item > .actions > .actions-wrapper > .favorites-button > i.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.movie-item > .actions > .actions-wrapper > .favorites-button > i.visible {
-  opacity: 1;
-  pointer-events: initial;
-}
-
-.movie-item > .actions > .actions-wrapper > .favorites-button > .fas {
-  color: #FF3A53;
 }
 
 .movie-item > .alert-message {

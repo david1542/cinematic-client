@@ -5,7 +5,9 @@ import { FETCH_POPULAR_MOVIES, FETCH_POPULAR_MOVIES_SUCCESS,
   RESET_SPECIFIC_MOVIE, SEARCH_TERM, SEARCH_TERM_SUCCESS,
   SEARCH_TERM_FAILURE, SEARCH_TORRENTS, SEARCH_TORRENTS_SUCCESS,
   SEARCH_TORRENTS_FAILURE, RESET_TORRENTS, ADD_TORRENT,
-  ADD_TORRENT_SUCCESS, ADD_TORRENT_FAILURE, GET_MOVIES } from '../../actions'
+  ADD_TORRENT_SUCCESS, ADD_TORRENT_FAILURE, GET_MOVIES,
+  GET_MOVIES_CATEGORIES, GET_MOVIES_CATEGORIES_SUCCESS,
+  GET_MOVIES_CATEGORIES_FAILURE } from '../../actions'
 
 const state = {
   popularMovies: null,
@@ -50,6 +52,12 @@ const mutations = {
   },
   [ADD_TORRENT_FAILURE] (state, { err }) {
     state.selectedHashError = err
+  },
+  [GET_MOVIES_CATEGORIES_SUCCESS] (state, { categories }) {
+    state.categories = categories
+  },
+  [GET_MOVIES_CATEGORIES_FAILURE] (state, { error }) {
+    state.categoriesError = error
   }
 }
 
@@ -87,6 +95,20 @@ const actions = {
         },
         (err) => {
           commit(FETCH_POPULAR_MOVIES_FAILURE, { err })
+          reject(err)
+        }
+      )
+    })
+  },
+  [GET_MOVIES_CATEGORIES] ({ commit }) {
+    return new Promise((resolve, reject) => {
+      movie.getMoviesGenres(
+        (categories) => {
+          commit(GET_MOVIES_CATEGORIES_SUCCESS, { categories })
+          resolve(categories)
+        },
+        (err) => {
+          commit(GET_MOVIES_CATEGORIES_FAILURE, { err })
           reject(err)
         }
       )

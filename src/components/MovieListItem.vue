@@ -6,7 +6,9 @@
       <div class="content">
         <h2 class="title">{{ movie.original_title }}</h2>
         <p class="overview">{{ movie.overview }}</p>
-        <button class="btn btn-primary" v-on:click="showMovie(movie.id)">Explore More!</button>
+        <router-link class="btn btn-primary" :to="{name: 'MoviePage', params: {id: movie.id}}">
+          Explore More!
+        </router-link>
       </div>
     </div>
 </template>
