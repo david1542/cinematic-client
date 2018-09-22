@@ -60,7 +60,7 @@ export default {
   height: 300px;
   display: inline-block;
   margin: auto;
-  overflowx: hidden;
+  overflow: hidden;
 }
 
 .error .p {
