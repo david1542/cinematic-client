@@ -1,6 +1,10 @@
 <template>
   <div class="list-container">
-    <div class="movie-list" :style="{transform: 'translateX(' + getLeft + 'px)'}">
+    <div
+      class="movie-list"
+      :style="{transform: 'translateX(' + getLeft + 'px)'}"
+      ref="movieList"
+    >
       <MovieGalleryItem
         v-for="(movie, index) in movies"
         :key="movie.id"
@@ -16,10 +20,10 @@
     </div>
     <div class="slide-buttons">
       <div class="next button" :class="{ hidden: middleItem === movies.length - 1 }">
-        <i class="fas fa-arrow-right fa-3x" v-on:click="increase"></i>
+        <i class="fas fa-arrow-right fa-2x" v-on:click="increase"></i>
       </div>
       <div class="prev button" :class="{ hidden: middleItem === 0 }">
-        <i class="fas fa-arrow-left fa-3x" v-on:click="decrease"></i>
+        <i class="fas fa-arrow-left fa-2x" v-on:click="decrease"></i>
       </div>
     </div>
   </div>
@@ -49,11 +53,16 @@ export default {
     }
   },
   methods: {
+    evaluateArray () {
+      console.log(this.$refs.movieList)
+    },
     increase: function () {
       this.middleItem += 1
+      this.evaluateArray('right')
     },
     decrease: function () {
       this.middleItem -= 1
+      this.evaluateArray('left')
     },
     showMovie: function (eventData) {
       const { id } = eventData
@@ -86,6 +95,34 @@ export default {
         })
       }
     }
+    // evaluateArray (direction) {
+    //   const children = this.$refs.movieList.childNodes
+    //   let reachedVisible = false
+    //   let counter = 0
+    //   let startIndex = direction === 'left' ? this.movies.length : 0
+
+    //   while (!reachedVisible) {
+    //     const child = direction === 'left' ? children[childre.length - 1] : children[0]
+    //     const xPosition = child.offsetLeft
+    //     const width = child.offsetWidth
+
+    //     if (direction === 'left') {
+    //       if (xPosition + width <= 0) {
+    //         const lastItem = children.pop()
+    //         children
+    //       } else {
+    //         reachedVisible = true
+    //       }
+    //     } else {
+    //       if (xPosition >= window.innerWidth) {
+    //         const [first, ...rest] = children
+    //         children = [...rest, first]
+    //       } else {
+    //         reachedVisible = true
+    //       }
+    //     }
+    //   }
+    // }
   },
   computed: {
     getLeft: function () {
@@ -134,6 +171,15 @@ export default {
   display: inline-block;
   cursor: pointer;
   z-index: 3;
+  padding: 7px 12px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.9);
+  transition: 0.3s;
+  box-shadow: 0px 2px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+.slide-buttons > .button:hover {
+  transform: translateY(-7px);
 }
 
 .slide-buttons > .button.hidden {

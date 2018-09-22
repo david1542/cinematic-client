@@ -32,7 +32,7 @@ export default {
   margin-bottom: 30px;
 }
 .category-name {
-  font-size: 70px;
+  font-size: 43px;
   text-align: center;
   color: white;
   margin-bottom: 100px;

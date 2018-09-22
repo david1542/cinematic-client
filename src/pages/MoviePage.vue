@@ -155,6 +155,8 @@ export default {
   width: 100%;
   margin: 80px 0 100px 0;
   flex-direction: column;
+  opacity: 0.3;
+  transition: 0.3s;
 }
 
 .recommended > h2 {
@@ -166,9 +168,11 @@ export default {
   text-align: left;
 }
 
-.movie-container:hover {
+.movie-container:hover,
+.recommended:hover {
   opacity: 1;
 }
+
 .movie-container > img {
   flex-basis: 20%;
 }

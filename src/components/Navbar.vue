@@ -96,7 +96,7 @@ export default {
 
 <style>
 .navbar {
-  position: absolute;
+  position: fixed;
   width: 100%;
   background-color: transparent !important;
   top: 0;
@@ -104,6 +104,9 @@ export default {
   padding: 8px 60px 8px 30px;
 }
 
+.shrink .search {
+  width: 50px;
+}
 .navbar a {
   text-decoration: none;
   color: white;

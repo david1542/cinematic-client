@@ -47,7 +47,7 @@ export default {
   height: auto;
 }
 .popular-movies {
-  font-size: 70px;
+  font-size: 43px;
   text-align: center;
   color: white;
   margin-top: 200px;
