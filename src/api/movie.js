@@ -68,7 +68,6 @@ export default {
 
       return Promise.all(moviePromises)
     }).then(categories => {
-      debugger
       success(categories)
     }).catch(err => failure(err))
   },
