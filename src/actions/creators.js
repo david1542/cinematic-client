@@ -52,3 +52,8 @@ export const addTorrent = (hash) => ({
   type: 'movie/' + ACTIONS.ADD_TORRENT,
   payload: { hash }
 })
+
+export const getRecommended = (id) => ({
+  type: 'movie/' + ACTIONS.GET_RECOMMENDED_MOVIES,
+  payload: { id }
+})

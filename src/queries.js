@@ -9,7 +9,11 @@ export const moviesQueryUrl = (query) => {
 }
 
 export const popularMoviesUrl = () => {
-  return 'https://api.themoviedb.org/3/movie/popular?api_key=' + API_KEY
+  return OMDB_ROOT + 'movie/popular?api_key=' + API_KEY
+}
+
+export const getRecommendedMovies = (id) => {
+  return OMDB_ROOT + 'movie/' + id + '/recommendations?api_key=' + API_KEY
 }
 
 export const getGenres = () => {

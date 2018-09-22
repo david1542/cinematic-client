@@ -7,7 +7,8 @@ import { FETCH_POPULAR_MOVIES, FETCH_POPULAR_MOVIES_SUCCESS,
   SEARCH_TORRENTS_FAILURE, RESET_TORRENTS, ADD_TORRENT,
   ADD_TORRENT_SUCCESS, ADD_TORRENT_FAILURE, GET_MOVIES,
   GET_MOVIES_CATEGORIES, GET_MOVIES_CATEGORIES_SUCCESS,
-  GET_MOVIES_CATEGORIES_FAILURE } from '../../actions'
+  GET_MOVIES_CATEGORIES_FAILURE, GET_RECOMMENDED_MOVIES,
+  GET_RECOMMENDED_MOVIES_SUCCESS, GET_RECOMMENDED_MOVIES_FAILURE } from '../../actions'
 
 const state = {
   popularMovies: null,
@@ -58,6 +59,12 @@ const mutations = {
   },
   [GET_MOVIES_CATEGORIES_FAILURE] (state, { error }) {
     state.categoriesError = error
+  },
+  [GET_RECOMMENDED_MOVIES_SUCCESS] (state, { movies }) {
+    state.recommendedMovies = movies
+  },
+  [GET_RECOMMENDED_MOVIES_FAILURE] (state, { error }) {
+    state.recommendedMoviesError = error
   }
 }
 
@@ -95,6 +102,21 @@ const actions = {
         },
         (err) => {
           commit(FETCH_POPULAR_MOVIES_FAILURE, { err })
+          reject(err)
+        }
+      )
+    })
+  },
+  [GET_RECOMMENDED_MOVIES] ({ commit }, { payload }) {
+    return new Promise((resolve, reject) => {
+      movie.getRecommended(
+        payload.id,
+        (movies) => {
+          commit(GET_RECOMMENDED_MOVIES_SUCCESS, { movies })
+          resolve(movies)
+        },
+        (err) => {
+          commit(GET_RECOMMENDED_MOVIES_FAILURE, { err })
           reject(err)
         }
       )

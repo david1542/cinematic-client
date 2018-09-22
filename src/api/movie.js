@@ -3,7 +3,8 @@ import async from 'async'
 import { popularMoviesUrl, specificMovieUrl,
   generateImageUrl, generateVideosUrl,
   generateYoutubeUrl, moviesQueryUrl,
-  addTorrentMagnet, getGenres, getMoviesByGenre } from '../queries'
+  addTorrentMagnet, getGenres, getMoviesByGenre,
+  getRecommendedMovies } from '../queries'
 import {
   SERVER_URL
 } from '../config'
@@ -70,6 +71,18 @@ export default {
       debugger
       success(categories)
     }).catch(err => failure(err))
+  },
+  getRecommended (id, success, failure) {
+    axios.get(getRecommendedMovies(id)).then(res => {
+      const movies = res.data.results.map(movie => {
+        movie.poster = generateImageUrl(300, movie.poster_path)
+        return movie
+      })
+
+      success(movies)
+    }).catch(err => {
+      failure(err)
+    })
   },
   getSpecificMovie (id, success, failure) {
     let foundMovie

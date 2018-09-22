@@ -28,6 +28,10 @@
         <BigHeartButton :isActive="isFavorite" />
       </LikeButton>
     </div>
+    <div class="recommended">
+      <h2><strong>You may also like...</strong></h2>
+      <MovieGallery :movies="recommendedMovies" />
+    </div>
     <div v-if="specificMovie" class='trailer'>
       <iframe frameborder='0' height='100%' width='100%' :src="specificMovie.trailer">
       </iframe>
@@ -40,7 +44,9 @@ import { mapState, mapGetters } from 'vuex'
 import MovieTorrents from '@/components/MovieTorrents'
 import LikeButton from '@/components/LikeButton'
 import BigHeartButton from '@/components/BigHeartButton'
-import { getMovie, addToFavorites, removeFromFavorites } from '@/actions/creators'
+import MovieGallery from '@/components/MovieGallery'
+import { getMovie, addToFavorites,
+  removeFromFavorites, getRecommended } from '@/actions/creators'
 export default {
   name: 'MoviePage',
   props: {
@@ -51,7 +57,8 @@ export default {
   components: {
     MovieTorrents,
     LikeButton,
-    BigHeartButton
+    BigHeartButton,
+    MovieGallery
   },
   data: function () {
     return {
@@ -60,9 +67,13 @@ export default {
     }
   },
   mounted () {
-    this.$store.dispatch(getMovie(this.id))
+    this.getData()
   },
   methods: {
+    getData () {
+      this.$store.dispatch(getMovie(this.id))
+      this.$store.dispatch(getRecommended(this.id))
+    },
     addToFavorites () {
       const exists = this.isMovieInFavorites(this.id)
       if (exists) {
@@ -72,9 +83,15 @@ export default {
       }
     }
   },
+  watch: {
+    '$route.params.id' () {
+      this.getData()
+    }
+  },
   computed: {
     ...mapState('movie', [
       'specificMovie',
+      'recommendedMovies',
       'torrents'
     ]),
     ...mapGetters('user', [
@@ -131,6 +148,22 @@ export default {
   opacity: 0.1;
   transition: 0.3s;
   animation: fadeOutAnimation 1s ease-out 1s forwards;
+}
+
+.recommended {
+  display: flex;
+  width: 100%;
+  margin: 80px 0 100px 0;
+  flex-direction: column;
+}
+
+.recommended > h2 {
+  padding-left: 40px;
+  margin-bottom: 30px;
+  font-size: 25px;
+  color: white;
+  font-weight: normal;
+  text-align: left;
 }
 
 .movie-container:hover {
