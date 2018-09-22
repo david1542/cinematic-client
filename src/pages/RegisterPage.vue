@@ -1,6 +1,5 @@
 <template>
-  <div class="register-page">
-    <Navbar />
+  <AppPage>
     <h2>Sign up today for free!</h2>
     <form class="register-form">
       <div class="form-group">
@@ -31,17 +30,13 @@
       <h2>Registered user? Sign in here</h2>
       <router-link to="/login" class="btn btn-primary">Sign In</router-link>
     </div>
-  </div>
+  </AppPage>
 </template>
 
 <script>
 import { registerUser } from '../actions/creators'
-import Navbar from '@/components/Navbar'
 export default {
   name: 'RegisterPage',
-  components: {
-    Navbar
-  },
   data () {
     return {
       firstName: null,
@@ -73,47 +68,39 @@ export default {
 }
 </script>
 
-<style>
-.register-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  width: 100%;
-  background-image: url('../assets/theater.jpg');
-  background-size: cover;
-  padding-bottom: 150px;
+<style scoped>
+.page-container {
   color: white;
 }
-.register-page > h2 {
+h2 {
   font-size: 25px;
-  margin-top: 100px;
   margin-bottom: 30px;
   font-weight: bold;
 }
-.register-page > .register-form {
+.register-form {
   display: flex;
   flex-direction: column;
   width: 400px;
+  margin: auto;
 }
 
-.register-page > .register-form > button {
+.register-form > button {
   margin-top: 15px;
 }
 
-.register-page > .register-form > button > span > i{
+.register-form > button > span > i{
   margin-left: 5px;
 }
 
-.register-page > .register-form > .form-group > label {
+.register-form > .form-group > label {
   text-align: left;
   display: block;
 }
 
-.register-page > .login-reference {
+.login-reference {
   margin-top: 60px;
 }
-.register-page > .login-reference > h2 {
+.login-reference > h2 {
   font-size: 23px;
 }
 </style>

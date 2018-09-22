@@ -1,17 +1,32 @@
 <template>
-  <div class="login-page">
-    <Navbar />
+  <AppPage>
     <h2>Already have an account? Sign in!</h2>
-    <form class="login-form">
+    <form
+      class="login-form"
+      @keydown.enter="login"
+    >
       <div class="form-group">
         <label for="email">Email</label>
-        <input id="email" class="form-control" type="text" v-model="email" />
+        <input
+          id="email"
+          class="form-control"
+          type="text"
+          v-model="email"
+        />
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input id="password" class="form-control" type="password" v-model="password" />
+        <input
+          id="password"
+          class="form-control"
+          type="password"
+          v-model="password" />
       </div>
-      <button type="button" class="btn btn-lg btn-success" v-on:click="login">
+      <button
+        type="button"
+        class="btn btn-lg btn-success"
+        :click="login"
+      >
         <span v-if="loading">
           Logging in
           <i class="fas fa-circle-notch fa-spin"></i>
@@ -19,17 +34,13 @@
         <span v-else>Log In</span>
       </button>
     </form>
-  </div>
+  </AppPage>
 </template>
 
 <script>
 import { loginUser } from '../actions/creators'
-import Navbar from '@/components/Navbar'
 export default {
   name: 'LoginPage',
-  components: {
-    Navbar
-  },
   data () {
     return {
       email: null,
@@ -57,40 +68,32 @@ export default {
 }
 </script>
 
-<style>
-.login-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  background-image: url('../assets/theater.jpg');
-  background-size: cover;
-  padding-bottom: 150px;
+<style scoped>
+.page-container {
   color: white;
 }
-.login-page > h2 {
+h2 {
   font-size: 25px;
   margin-top: 100px;
   margin-bottom: 30px;
   font-weight: bold;
 }
-.login-page > .login-form {
+.login-form {
   display: flex;
   flex-direction: column;
   width: 400px;
+  margin: auto;
 }
 
-.login-page > .login-form > button {
+.login-form > button {
   margin-top: 15px;
 }
 
-.login-page > .login-form > button > span > i{
+.login-form > button > span > i{
   margin-left: 5px;
 }
 
-.login-page > .login-form > .form-group > label {
+.login-form > .form-group > label {
   text-align: left;
   display: block;
 }

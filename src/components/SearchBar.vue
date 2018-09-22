@@ -32,6 +32,7 @@ export default {
   }
   input[type="text"] {
     width: 400px;
+    margin: auto;
   }
   button {
     height: 41px;

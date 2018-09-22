@@ -1,6 +1,5 @@
 <template>
-  <div class="search-page">
-    <Navbar />
+  <AppPage>
     <div class="header">
       <h1 class="display-4">
         Hello from search page
@@ -13,19 +12,17 @@
         :movie="movie"
       />
     </div>
-  </div>
+  </AppPage>
 </template>
 
 <script>
 import { searchMovies } from '../actions/creators'
 import { mapState } from 'vuex'
 import MovieListItem from '@/components/MovieListItem'
-import Navbar from '@/components/Navbar'
 export default {
   name: 'SearchPage',
   components: {
-    MovieListItem,
-    Navbar
+    MovieListItem
   },
   mounted: function () {
     const { query } = this.$router.history.current.query
@@ -38,24 +35,13 @@ export default {
 </script>
 
 <style>
-.search-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  width: 100%;
-  background-image: url('../assets/theater.jpg');
-  background-size: 100vw 100vh;
-  background-attachment: fixed;
-}
-
-.search-page > .header {
+.header {
   padding: 12px 40px;
   display: flex;
   width: 100%;
 }
 
-.search-page > .header > h1 {
+.header > h1 {
   color: white;
   font-size: 29px;
 }

@@ -1,39 +1,36 @@
 <template>
-    <div class='movie-page'>
-      <Navbar />
-      <div v-if="specificMovie" class='movie-container'>
-        <img :src='specificMovie.poster' alt=''>
-        <div class='movie-overview'>
-          <h1 class='title'>{{ specificMovie.original_title }}</h1>
-          <h2 class='description'>{{ specificMovie.overview }}</h2>
-          <MovieTorrents v-if="torrents && torrents.length > 0" :torrents="torrents" />
-          <div v-else-if="torrents && torrents.length === 0" class="message">
-            <i class="fas fa-exclamation-circle"></i>
-            No Available Torrents
-          </div>
-          <div v-else class="message">
-            <i class="fas fa-spinner fa-spin"></i>
-            Loading Torrents...
-          </div>
+  <AppPage>
+    <div v-if="specificMovie" class='movie-container'>
+      <img :src='specificMovie.poster' alt=''>
+      <div class='movie-overview'>
+        <h1 class='title'>{{ specificMovie.original_title }}</h1>
+        <h2 class='description'>{{ specificMovie.overview }}</h2>
+        <MovieTorrents v-if="torrents && torrents.length > 0" :torrents="torrents" />
+        <div v-else-if="torrents && torrents.length === 0" class="message">
+          <i class="fas fa-exclamation-circle"></i>
+          No Available Torrents
+        </div>
+        <div v-else class="message">
+          <i class="fas fa-spinner fa-spin"></i>
+          Loading Torrents...
         </div>
       </div>
-      <div v-if="specificMovie" class='trailer'>
-        <iframe frameborder='0' height='100%' width='100%' :src="specificMovie.trailer">
-        </iframe>
-      </div>
     </div>
+    <div v-if="specificMovie" class='trailer'>
+      <iframe frameborder='0' height='100%' width='100%' :src="specificMovie.trailer">
+      </iframe>
+    </div>
+  </AppPage>
 </template>
 
 <script>
 import MovieTorrents from '@/components/MovieTorrents'
-import Navbar from '@/components/Navbar'
 import { getMovie } from '../actions/creators'
 import { mapState } from 'vuex'
 export default {
   name: 'MoviePage',
   components: {
-    MovieTorrents,
-    Navbar
+    MovieTorrents
   },
   data: function () {
     return {
@@ -53,21 +50,7 @@ export default {
 </script>
 
 <style>
-.movie-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  background-image: url('../assets/theater.jpg');
-  z-index: -2;
-  background-size: 100vw 100vh;
-  background-attachment: fixed;
-  padding-top: 30px;
-}
-
-.movie-page > .trailer {
+.trailer {
   position: fixed;
   z-index: -1;
   width: 100%;
@@ -92,7 +75,7 @@ export default {
   justify-content: flex-start;
   padding: 60px 40px;
   flex-wrap: wrap;
-  z-index: 1;
+  z-index: 2;
   opacity: 0.1;
   transition: 0.3s;
   animation: fadeOutAnimation 1s ease-out 1s forwards;

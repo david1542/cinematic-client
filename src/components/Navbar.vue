@@ -77,6 +77,7 @@ export default {
   width: 100%;
   background-color: transparent !important;
   top: 0;
+  z-index: 3;
   padding: 8px 60px 8px 30px;
 }
 
