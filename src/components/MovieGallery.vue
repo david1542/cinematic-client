@@ -1,6 +1,6 @@
 <template>
   <div class="list-container">
-    <div class="movie-list" v-bind:style="{transform: 'translateX(' + getLeft + 'px)'}">
+    <div class="movie-list" :style="{transform: 'translateX(' + getLeft + 'px)'}">
       <MovieGalleryItem
         v-for="(movie, index) in movies"
         :key="movie.id"
@@ -15,10 +15,10 @@
       />
     </div>
     <div class="slide-buttons">
-      <div class="next button" v-bind:class="{ hidden: middleItem === movies.length - 1 }">
+      <div class="next button" :class="{ hidden: middleItem === movies.length - 1 }">
         <i class="fas fa-arrow-right fa-3x" v-on:click="increase"></i>
       </div>
-      <div class="prev button" v-bind:class="{ hidden: middleItem === 0 }">
+      <div class="prev button" :class="{ hidden: middleItem === 0 }">
         <i class="fas fa-arrow-left fa-3x" v-on:click="decrease"></i>
       </div>
     </div>

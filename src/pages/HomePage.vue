@@ -2,9 +2,9 @@
   <div class="home-page">
     <Navbar />
     <h2 class="popular-movies">Popular Movies</h2>
-    <MovieGallery v-if="popularMovies" v-bind:movies="popularMovies" />
+    <MovieGallery v-if="popularMovies" :movies="popularMovies" />
     <h2 class="page-title">Search movies now for free!</h2>
-    <SearchBar v-on:search-movie="sendQuery" />
+    <SearchBar :search-movie="sendQuery" />
   </div>
 </template>
 

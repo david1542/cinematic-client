@@ -1,6 +1,6 @@
 <template>
   <div class="player-container">
-    <video autoplay v-bind:src="video" controls></video>
+    <video autoplay :src="video" controls></video>
   </div>
 </template>
 

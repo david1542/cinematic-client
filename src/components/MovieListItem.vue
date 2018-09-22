@@ -1,7 +1,7 @@
 <template>
     <div class="movie-item">
       <div class="movie-img">
-        <img v-bind:src="movie.poster" alt="Movie Poster" />
+        <img :src="movie.poster" alt="Movie Poster" />
       </div>
       <div class="content">
         <h2 class="title">{{ movie.original_title }}</h2>

@@ -1,5 +1,6 @@
 <template>
   <div class="search-page">
+    <Navbar />
     <div class="header">
       <h1 class="display-4">
         Hello from search page
@@ -19,10 +20,12 @@
 import { searchMovies } from '../actions/creators'
 import { mapState } from 'vuex'
 import MovieListItem from '@/components/MovieListItem'
+import Navbar from '@/components/Navbar'
 export default {
   name: 'SearchPage',
   components: {
-    MovieListItem
+    MovieListItem,
+    Navbar
   },
   mounted: function () {
     const { query } = this.$router.history.current.query

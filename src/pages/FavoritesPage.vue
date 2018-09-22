@@ -1,5 +1,6 @@
 <template>
   <div class="favorites-page">
+    <Navbar />
     <div class="header">
       <h1 class="display-4">
         Favorites
@@ -19,10 +20,12 @@
 import { mapState } from 'vuex'
 import { getMovies } from '../actions/creators'
 import MovieListItem from '@/components/MovieListItem'
+import Navbar from '@/components/Navbar'
 export default {
   name: 'FavoritesPage',
   components: {
-    MovieListItem
+    MovieListItem,
+    Navbar
   },
   data () {
     return {

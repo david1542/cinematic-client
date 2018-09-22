@@ -2,8 +2,8 @@
   <div class="container">
     <select class="form-control" v-model="selectedTorrent">
       <option
-        v-bind:key="torrent.infoHash"
-        v-bind:value="torrent"
+        :key="torrent.infoHash"
+        :value="torrent"
         v-for="torrent in torrents"
       >
         {{ torrent.title }}

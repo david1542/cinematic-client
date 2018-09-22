@@ -1,11 +1,12 @@
 <template>
     <div class='movie-page'>
+      <Navbar />
       <div v-if="specificMovie" class='movie-container'>
-        <img v-bind:src='specificMovie.poster' alt=''>
+        <img :src='specificMovie.poster' alt=''>
         <div class='movie-overview'>
           <h1 class='title'>{{ specificMovie.original_title }}</h1>
           <h2 class='description'>{{ specificMovie.overview }}</h2>
-          <MovieTorrents v-if="torrents && torrents.length > 0" v-bind:torrents="torrents" />
+          <MovieTorrents v-if="torrents && torrents.length > 0" :torrents="torrents" />
           <div v-else-if="torrents && torrents.length === 0" class="message">
             <i class="fas fa-exclamation-circle"></i>
             No Available Torrents
@@ -17,7 +18,7 @@
         </div>
       </div>
       <div v-if="specificMovie" class='trailer'>
-        <iframe frameborder='0' height='100%' width='100%' v-bind:src="specificMovie.trailer">
+        <iframe frameborder='0' height='100%' width='100%' :src="specificMovie.trailer">
         </iframe>
       </div>
     </div>
@@ -25,12 +26,14 @@
 
 <script>
 import MovieTorrents from '@/components/MovieTorrents'
+import Navbar from '@/components/Navbar'
 import { getMovie } from '../actions/creators'
 import { mapState } from 'vuex'
 export default {
   name: 'MoviePage',
   components: {
-    MovieTorrents
+    MovieTorrents,
+    Navbar
   },
   data: function () {
     return {
@@ -58,14 +61,15 @@ export default {
   width: 100%;
   height: 100%;
   background-image: url('../assets/theater.jpg');
-  z-index: -3;
+  z-index: -2;
   background-size: 100vw 100vh;
   background-attachment: fixed;
+  padding-top: 30px;
 }
 
 .movie-page > .trailer {
   position: fixed;
-  z-index: 0;
+  z-index: -1;
   width: 100%;
   height: 100%;
   top: 0;
