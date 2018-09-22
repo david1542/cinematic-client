@@ -1,10 +1,5 @@
 <template>
   <AppPage>
-    <div class="header">
-      <h1 class="display-4">
-        Hello from search page
-      </h1>
-    </div>
     <div class="movie-list">
       <MovieListItem
         v-for="movie in searchMovies"
@@ -21,12 +16,26 @@ import { mapState } from 'vuex'
 import MovieListItem from '@/components/MovieListItem'
 export default {
   name: 'SearchPage',
+  props: {
+    query: {
+      required: true
+    }
+  },
   components: {
     MovieListItem
   },
-  mounted: function () {
-    const { query } = this.$router.history.current.query
-    this.$store.dispatch(searchMovies(query))
+  methods: {
+    search () {
+      this.$store.dispatch(searchMovies(this.query))
+    }
+  },
+  mounted () {
+    this.search()
+  },
+  watch: {
+    '$route.query.query' () {
+      this.search()
+    }
   },
   computed: mapState('movie', [
     'searchMovies'

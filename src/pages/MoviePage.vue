@@ -5,6 +5,11 @@
       <div class='movie-overview'>
         <h1 class='title'>{{ specificMovie.original_title }}</h1>
         <h2 class='description'>{{ specificMovie.overview }}</h2>
+        <div class="details">
+          <h2 class="detail"><strong>Year:</strong> {{ specificMovie.release_date }} </h2>
+          <h2 class="detail"><strong>Length:</strong> {{ specificMovie.runtime }} minutes </h2>
+          <h2 class="detail"><strong>Genres:</strong> {{ genres }} </h2>
+        </div>
         <MovieTorrents v-if="torrents && torrents.length > 0" :torrents="torrents" />
         <div v-else-if="torrents && torrents.length === 0" class="message">
           <i class="fas fa-exclamation-circle"></i>
@@ -77,6 +82,13 @@ export default {
     ]),
     isFavorite () {
       return this.isMovieInFavorites(this.specificMovie.id)
+    },
+    genres () {
+      const output = this.specificMovie.genres.map(genre => {
+        return genre.name
+      }).join(', ')
+
+      return output
     }
   }
 }
@@ -141,13 +153,16 @@ export default {
   text-align: left;
 }
 
-.movie-container > .movie-overview > .description {
+.movie-container > .movie-overview > .description,
+.movie-container > .movie-overview > .details > .detail {
   color: white;
   font-size: 20px;
   font-weight: normal;
   text-align: left;
 }
-
+.movie-container > .movie-overview > .details {
+  margin-top: 20px;
+}
 .movie-container > .movie-overview > .message {
   position: absolute;
   color: white;

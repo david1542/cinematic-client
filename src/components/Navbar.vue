@@ -14,19 +14,29 @@
             Favorites
           </router-link>
         </b-nav-item>
-        <b-nav-item class="text-light">
-          <router-link :to="{name: 'SearchPage'}">
-            Search
-          </router-link>
-        </b-nav-item>
       </b-navbar-nav>
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
+        <b-nav-form
+          v-if="isAuthenticated"
+          @submit.prevent="search"
+        >
+          <b-form-input
+            size="sm"
+            class="mr-sm-4 search"
+            type="text"
+            placeholder="Search"
+            v-model="searchTerm"
+          />
+        </b-nav-form>
       <b-nav-item-dropdown v-if="isAuthenticated" right>
         <!-- Using button-content slot -->
         <template slot="button-content">
-          <h4 class="text-light user-dropdown-button">Hello {{ getUsername }}!</h4>
+          <h4 class="text-light user-dropdown-button">
+            <i class="fas fa-user" />
+          </h4>
         </template>
+        <b-dropdown-item href="#" class="dropdown-title">Hello {{ getUsername }}!</b-dropdown-item>
         <b-dropdown-item href="#">Profile</b-dropdown-item>
         <b-dropdown-item href="#" v-on:click="logout">Signout</b-dropdown-item>
       </b-nav-item-dropdown>
@@ -47,10 +57,23 @@ import { mapGetters } from 'vuex'
 import { logoutUser } from '../actions/creators'
 export default {
   name: 'Navbar',
+  data () {
+    return {
+      searchTerm: ''
+    }
+  },
   methods: {
     logout () {
       this.$store.dispatch(logoutUser()).then(() => {
         this.$router.push('/login')
+      })
+    },
+    search () {
+      this.$router.push({
+        name: 'SearchPage',
+        query: {
+          query: this.searchTerm
+        }
       })
     }
   },
@@ -120,5 +143,44 @@ export default {
 }
 .navbar .dropdown-item {
   color: black
+}
+.dropdown-title {
+  pointer-events: none;
+  font-size: 15px;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.dropdown-menu {
+  padding-top: 0;
+}
+.dropdown-title:focus {
+  background: transparent !important;
+}
+
+.search {
+  border-radius: 30px;
+  border: 2px solid white;
+  padding-left: 15px;
+}
+
+.search,
+.search:focus {
+  background-color: transparent;
+  color: white;
+}
+
+.search::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: white;
+    opacity: 1; /* Firefox */
+}
+
+.search:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: white;
+}
+
+.search::-ms-input-placeholder { /* Microsoft Edge */
+    color: white;
 }
 </style>

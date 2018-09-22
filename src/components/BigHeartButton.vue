@@ -51,8 +51,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 70px;
-  width: 70px;
+  height: 50px;
+  width: 50px;
   padding-top: 3px;
   padding-right: 1px;
 }
@@ -60,7 +60,7 @@ i {
   color: white;
   transition: 0.3s;
   position: absolute;
-  font-size: 40px;
+  font-size: 30px;
 }
 
 i.hidden {

@@ -40,7 +40,7 @@ export default new Router({
       name: 'SearchPage',
       component: SearchPage,
       beforeEnter: ifAuthenticated,
-      props: true
+      props: (route) => ({ query: route.query.query })
     },
     {
       path: '/movie/:id',
