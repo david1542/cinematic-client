@@ -59,8 +59,23 @@ export default {
   name: 'Navbar',
   data () {
     return {
-      searchTerm: ''
+      searchTerm: '',
+      lastScrollY: 0,
+      shrink: false
     }
+  },
+  mounted () {
+    window.addEventListener('scroll', function (e) {
+      var scrollY = window.scrollY
+      console.log(scrollY)
+      if (scrollY > this.lastScrollY) {
+        this.shrink = true
+      } else {
+        this.shrink = false
+      }
+
+      this.lastScrollY = scrollY
+    }.bind(this))
   },
   methods: {
     logout () {

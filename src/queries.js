@@ -12,6 +12,10 @@ export const popularMoviesUrl = () => {
   return OMDB_ROOT + 'movie/popular?api_key=' + API_KEY
 }
 
+export const topRatedMoviesUrl = () => {
+  return 'https://api.themoviedb.org/3/movie/top_rated?api_key=01583083c32e46250aa6bd51fb1b79d6'
+}
+
 export const getRecommendedMovies = (id) => {
   return OMDB_ROOT + 'movie/' + id + '/recommendations?api_key=' + API_KEY
 }

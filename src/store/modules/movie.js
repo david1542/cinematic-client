@@ -8,7 +8,9 @@ import { FETCH_POPULAR_MOVIES, FETCH_POPULAR_MOVIES_SUCCESS,
   ADD_TORRENT_SUCCESS, ADD_TORRENT_FAILURE, GET_MOVIES,
   GET_MOVIES_CATEGORIES, GET_MOVIES_CATEGORIES_SUCCESS,
   GET_MOVIES_CATEGORIES_FAILURE, GET_RECOMMENDED_MOVIES,
-  GET_RECOMMENDED_MOVIES_SUCCESS, GET_RECOMMENDED_MOVIES_FAILURE } from '../../actions'
+  GET_RECOMMENDED_MOVIES_SUCCESS, GET_RECOMMENDED_MOVIES_FAILURE,
+  GET_TOP_RATED_MOVIES, GET_TOP_RATED_MOVIES_SUCCESS,
+  GET_TOP_RATED_MOVIES_FAILURE } from '../../actions'
 
 const state = {
   popularMovies: null,
@@ -21,14 +23,14 @@ const mutations = {
   [FETCH_POPULAR_MOVIES_SUCCESS] (state, { movies }) {
     state.popularMovies = movies
   },
-  [FETCH_POPULAR_MOVIES_FAILURE] (state, { err }) {
-    state.popularMoviesError = err
+  [FETCH_POPULAR_MOVIES_FAILURE] (state, { error }) {
+    state.popularMoviesError = error
   },
   [FETCH_SPECIFIC_MOVIE_SUCCESS] (state, { movie }) {
     state.specificMovie = movie
   },
-  [FETCH_SPECIFIC_MOVIE_FAILURE] (state, { err }) {
-    state.specificMovieError = err
+  [FETCH_SPECIFIC_MOVIE_FAILURE] (state, { error }) {
+    state.specificMovieError = error
   },
   [RESET_SPECIFIC_MOVIE] (state) {
     state.specificMovie = null
@@ -36,8 +38,8 @@ const mutations = {
   [SEARCH_TERM_SUCCESS] (state, { movies }) {
     state.searchMovies = movies
   },
-  [SEARCH_TERM_FAILURE] (state, { err }) {
-    state.searchTermError = err
+  [SEARCH_TERM_FAILURE] (state, { error }) {
+    state.searchTermError = error
   },
   [RESET_TORRENTS] (state) {
     state.torrents = null
@@ -45,14 +47,14 @@ const mutations = {
   [SEARCH_TORRENTS_SUCCESS] (state, { torrents }) {
     state.torrents = torrents
   },
-  [SEARCH_TORRENTS_FAILURE] (state, { err }) {
-    state.torrentsError = err
+  [SEARCH_TORRENTS_FAILURE] (state, { error }) {
+    state.torrentsError = error
   },
   [ADD_TORRENT_SUCCESS] (state, { hash }) {
     state.selectedHash = hash
   },
-  [ADD_TORRENT_FAILURE] (state, { err }) {
-    state.selectedHashError = err
+  [ADD_TORRENT_FAILURE] (state, { error }) {
+    state.selectedHashError = error
   },
   [GET_MOVIES_CATEGORIES_SUCCESS] (state, { categories }) {
     state.categories = categories
@@ -65,6 +67,12 @@ const mutations = {
   },
   [GET_RECOMMENDED_MOVIES_FAILURE] (state, { error }) {
     state.recommendedMoviesError = error
+  },
+  [GET_TOP_RATED_MOVIES_SUCCESS] (state, { movies }) {
+    state.topRatedMovies = movies
+  },
+  [GET_TOP_RATED_MOVIES_FAILURE] (state, { error }) {
+    state.topRatedMoviesError = error
   }
 }
 
@@ -74,7 +82,7 @@ const actions = {
       movie.getMovies(
         payload.ids,
         (movies) => resolve(movies),
-        (err) => reject(err)
+        (error) => reject(error)
       )
     })
   },
@@ -86,9 +94,9 @@ const actions = {
           commit(ADD_TORRENT_SUCCESS, { hash })
           resolve(hash)
         },
-        (err) => {
-          commit(ADD_TORRENT_FAILURE, { err })
-          reject(err)
+        (error) => {
+          commit(ADD_TORRENT_FAILURE, { error })
+          reject(error)
         }
       )
     })
@@ -100,9 +108,9 @@ const actions = {
           commit(FETCH_POPULAR_MOVIES_SUCCESS, { movies })
           resolve(movies)
         },
-        (err) => {
-          commit(FETCH_POPULAR_MOVIES_FAILURE, { err })
-          reject(err)
+        (error) => {
+          commit(FETCH_POPULAR_MOVIES_FAILURE, { error })
+          reject(error)
         }
       )
     })
@@ -115,9 +123,23 @@ const actions = {
           commit(GET_RECOMMENDED_MOVIES_SUCCESS, { movies })
           resolve(movies)
         },
-        (err) => {
-          commit(GET_RECOMMENDED_MOVIES_FAILURE, { err })
-          reject(err)
+        (error) => {
+          commit(GET_RECOMMENDED_MOVIES_FAILURE, { error })
+          reject(error)
+        }
+      )
+    })
+  },
+  [GET_TOP_RATED_MOVIES] ({ commit }) {
+    return new Promise((resolve, reject) => {
+      movie.getTopRated(
+        (movies) => {
+          commit(GET_TOP_RATED_MOVIES_SUCCESS, { movies })
+          resolve(movies)
+        },
+        (error) => {
+          commit(GET_TOP_RATED_MOVIES_FAILURE, { error })
+          reject(error)
         }
       )
     })
@@ -129,9 +151,9 @@ const actions = {
           commit(GET_MOVIES_CATEGORIES_SUCCESS, { categories })
           resolve(categories)
         },
-        (err) => {
-          commit(GET_MOVIES_CATEGORIES_FAILURE, { err })
-          reject(err)
+        (error) => {
+          commit(GET_MOVIES_CATEGORIES_FAILURE, { error })
+          reject(error)
         }
       )
     })
@@ -147,9 +169,9 @@ const actions = {
           dispatch(SEARCH_TORRENTS, { title: movie.original_title })
           resolve(movie)
         },
-        (err) => {
-          commit(FETCH_SPECIFIC_MOVIE_FAILURE, { err })
-          reject(err)
+        (error) => {
+          commit(FETCH_SPECIFIC_MOVIE_FAILURE, { error })
+          reject(error)
         }
       )
     })
@@ -162,9 +184,9 @@ const actions = {
           commit(SEARCH_TORRENTS_SUCCESS, { torrents })
           resolve(torrents)
         },
-        (err) => {
-          commit(SEARCH_TORRENTS_FAILURE, { err })
-          reject(err)
+        (error) => {
+          commit(SEARCH_TORRENTS_FAILURE, { error })
+          reject(error)
         }
       )
     })
@@ -177,9 +199,9 @@ const actions = {
           commit(SEARCH_TERM_SUCCESS, { movies })
           resolve(movies)
         },
-        (err) => {
-          commit(SEARCH_TERM_FAILURE, { err })
-          reject(err)
+        (error) => {
+          commit(SEARCH_TERM_FAILURE, { error })
+          reject(error)
         }
       )
     })

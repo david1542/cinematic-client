@@ -4,7 +4,7 @@ import { popularMoviesUrl, specificMovieUrl,
   generateImageUrl, generateVideosUrl,
   generateYoutubeUrl, moviesQueryUrl,
   addTorrentMagnet, getGenres, getMoviesByGenre,
-  getRecommendedMovies } from '../queries'
+  getRecommendedMovies, topRatedMoviesUrl} from '../queries'
 import {
   SERVER_URL
 } from '../config'
@@ -78,6 +78,17 @@ export default {
         return movie
       })
 
+      success(movies)
+    }).catch(err => {
+      failure(err)
+    })
+  },
+  getTopRated (success, failure) {
+    axios.get(topRatedMoviesUrl()).then(res => {
+      const movies = res.data.results.map(movie => {
+        movie.poster = generateImageUrl(300, movie.poster_path)
+        return movie
+      })
       success(movies)
     }).catch(err => {
       failure(err)

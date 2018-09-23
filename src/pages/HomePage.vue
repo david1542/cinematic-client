@@ -2,6 +2,8 @@
   <AppPage>
     <h2 class="popular-movies">Popular</h2>
     <MovieGallery v-if="popularMovies" :movies="popularMovies" class="margin-bottom-200" />
+    <h2 class="popular-movies">Must See Movies</h2>
+    <MovieGallery v-if="topRatedMovies" :movies="topRatedMovies" class="margin-bottom-200" />
     <CategoryList :categories="categories" />
     <!-- <h2 class="page-title">Movie Search Engine</h2> -->
     <!-- <SearchBar :search-movie="sendQuery" /> -->
@@ -13,7 +15,8 @@ import { mapState } from 'vuex'
 import SearchBar from '@/components/SearchBar'
 import MovieGallery from '@/components/MovieGallery'
 import CategoryList from '@/components/CategoryList'
-import { getPopularMovies, getMoviesCategories } from '../actions/creators'
+import { getPopularMovies, getMoviesCategories,
+  getTopRated } from '../actions/creators'
 
 export default {
   name: 'HomePage',
@@ -24,6 +27,7 @@ export default {
   },
   mounted () {
     this.$store.dispatch(getPopularMovies())
+    this.$store.dispatch(getTopRated())
     this.$store.dispatch(getMoviesCategories())
   },
   methods: {
@@ -36,6 +40,7 @@ export default {
   },
   computed: mapState('movie', [
     'popularMovies',
+    'topRatedMovies',
     'categories'
   ])
 }

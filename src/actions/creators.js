@@ -57,3 +57,7 @@ export const getRecommended = (id) => ({
   type: 'movie/' + ACTIONS.GET_RECOMMENDED_MOVIES,
   payload: { id }
 })
+
+export const getTopRated = () => ({
+  type: 'movie/' + ACTIONS.GET_TOP_RATED_MOVIES
+})
