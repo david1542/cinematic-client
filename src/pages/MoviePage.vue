@@ -9,6 +9,16 @@
           <h2 class="detail"><strong>Year:</strong> {{ specificMovie.release_date }} </h2>
           <h2 class="detail"><strong>Length:</strong> {{ specificMovie.runtime }} minutes </h2>
           <h2 class="detail"><strong>Genres:</strong> {{ genres }} </h2>
+          <h2 class="detail"><strong>Actors:</strong> {{ actors }} </h2>
+          <h2 class="detail"><strong>Director:</strong> {{ specificMovie.director }} </h2>
+        </div>
+        <div class="rating">
+          <div class="wrapper">
+            <i class="fas fa-star"></i>
+            <a :href="'https://www.imdb.com/title/' + specificMovie.imdb_id" target="_blank">
+              {{ specificMovie.vote_average }}
+            </a>
+          </div>
         </div>
         <MovieTorrents v-if="torrents && torrents.length > 0" :torrents="torrents" />
         <div v-else-if="torrents && torrents.length === 0" class="message">
@@ -106,6 +116,9 @@ export default {
       }).join(', ')
 
       return output
+    },
+    actors () {
+      return this.specificMovie.actors.slice(0, 5).join(', ')
     }
   }
 }
@@ -145,7 +158,7 @@ export default {
   padding: 60px 40px;
   flex-wrap: wrap;
   z-index: 2;
-  opacity: 0.1;
+  opacity: 1;
   transition: 0.3s;
   animation: fadeOutAnimation 1s ease-out 1s forwards;
 }
@@ -212,5 +225,48 @@ export default {
 .movie-container > .movie-overview > .message > .fas {
   font-size: 20px;
   margin-right: 4px;
+}
+
+.movie-container > .movie-overview > .rating {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 50px;
+  height: 50px;
+  z-index: 3;
+}
+
+.movie-container > .movie-overview > .rating > .wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+.movie-container > .movie-overview > .rating > .wrapper > i {
+  position: absolute;
+  color: #F9C504;
+  font-size: 45px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  display: block;
+}
+
+.movie-container > .movie-overview > .rating > .wrapper > a {
+  text-decoration: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
 }
 </style>

@@ -2,8 +2,6 @@
   <div
     class="wrapper"
     @click="click"
-    @mouseenter="mouseEnter"
-    @mouseleave="mouseLeave"
   >
     <i
       :class="{hidden: !hovered && !isActive}"

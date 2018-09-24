@@ -36,6 +36,10 @@ export const specificMovieUrl = (id) => {
   return OMDB_ROOT + 'movie/' + id + '?api_key=' + API_KEY
 }
 
+export const getMovieCast = (id) => {
+  return OMDB_ROOT + 'movie/' + id + '/credits?api_key=' + API_KEY
+}
+
 export const generateVideosUrl = (id) => {
   return OMDB_ROOT + 'movie/' + id + '/videos?api_key=' + API_KEY
 }

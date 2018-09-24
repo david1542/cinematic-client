@@ -4,7 +4,8 @@ import { popularMoviesUrl, specificMovieUrl,
   generateImageUrl, generateVideosUrl,
   generateYoutubeUrl, moviesQueryUrl,
   addTorrentMagnet, getGenres, getMoviesByGenre,
-  getRecommendedMovies, topRatedMoviesUrl} from '../queries'
+  getRecommendedMovies, topRatedMoviesUrl,
+  getMovieCast } from '../queries'
 import {
   SERVER_URL
 } from '../config'
@@ -96,7 +97,7 @@ export default {
   },
   getSpecificMovie (id, success, failure) {
     let foundMovie
-    axios.get(specificMovieUrl(id)).then(res => {
+    const movieSearch = axios.get(specificMovieUrl(id)).then(res => {
       const movie = res.data
       movie.poster = generateImageUrl(300, movie.poster_path)
 
@@ -112,7 +113,31 @@ export default {
       })
 
       foundMovie.trailer = generateYoutubeUrl(video.key)
-      success(foundMovie)
+
+      return foundMovie
+    }).catch(err => {
+      throw err
+    })
+
+    const castSearch = axios.get(getMovieCast(id)).then(res => {
+      const actors = res.data.cast.map(actor => actor.name)
+      const director = res.data.crew.find(member => member.job === 'Director')
+      return {
+        actors,
+        director
+      }
+    }).catch(err => {
+      throw err
+    })
+
+    Promise.all([movieSearch, castSearch]).then(res => {
+      const movie = res[0]
+      const crew = res[1]
+
+      movie.actors = crew.actors
+      movie.director = crew.director.name
+
+      success(movie)
     }).catch(err => {
       failure(err)
     })
