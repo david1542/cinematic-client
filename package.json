@@ -1,23 +1,25 @@
 {
   "name": "movies-vue-js",
   "version": "1.0.0",
-  "description": "A Vue.js project",
-  "author": "david1542 <dudu5321@hotmail.com>",
   "private": true,
   "scripts": {
+    "build": "node build/build.js",
+    "lint": "eslint --ext .js,.vue src",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "lint": "eslint --ext .js,.vue src",
-    "build": "node build/build.js",
     "prod": "serve -s dist"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.0.0-rc.1",
+    "@fortawesome/fontawesome-free": "^5.2.0",
     "async": "^2.6.1",
     "axios": "^0.18.0",
     "bootstrap-vue": "^2.0.0-rc.11",
     "hover.css": "^2.3.2",
+    "roboto-fontface": "*",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
+    "vuetify": "^1.2.5",
     "vuex": "^3.0.1",
     "vuex-persistedstate": "^2.5.4"
   },
@@ -60,6 +62,7 @@
     "shelljs": "^0.7.6",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
+    "vue-cli-plugin-vuetify": "^0.2.0",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
@@ -68,13 +71,15 @@
     "webpack-dev-server": "^2.9.1",
     "webpack-merge": "^4.1.0"
   },
-  "engines": {
-    "node": ">= 6.0.0",
-    "npm": ">= 3.0.0"
-  },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "description": "A Vue.js project",
+  "author": "david1542 <dudu5321@hotmail.com>",
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
+  }
 }

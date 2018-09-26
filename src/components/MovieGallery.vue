@@ -170,7 +170,7 @@ export default {
   position: absolute;
   display: inline-block;
   cursor: pointer;
-  z-index: 3;
+  z-index: 2;
   padding: 7px 12px;
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.9);

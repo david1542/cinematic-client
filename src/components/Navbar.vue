@@ -1,32 +1,44 @@
 <template>
-  <b-navbar toggleable="md" type="dark" variant="light">
-    <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-    <b-navbar-brand href="#">
+  <nav>
+    <div class="navbar-brand">
       <router-link :to="{name: 'HomePage'}">
         Movies - Vue.js
         <i class="fas fa-film"></i>
       </router-link>
-    </b-navbar-brand>
-    <b-collapse is-nav id="nav_collapse">
-      <b-navbar-nav>
-        <b-nav-item class="text-light">
-          <router-link :to="{name: 'FavoritesPage'}">
-            Favorites
-          </router-link>
-        </b-nav-item>
-      </b-navbar-nav>
-      <!-- Right aligned nav items -->
-      <b-navbar-nav class="ml-auto">
-        <b-nav-form
+    </div>
+    <div class="nav-items">
+      <router-link v-if="isAuthenticated" :to="{name: 'FavoritesPage'}">
+        Favorites
+      </router-link>
+      <div class="">
+        <form
           v-if="isAuthenticated"
           @submit.prevent="search"
         >
-          <b-form-input
-            size="sm"
+          <input 
             class="mr-sm-4 search"
             type="text"
             placeholder="Search"
             v-model="searchTerm"
+          />
+        </form>
+      </div>
+    </div>
+  </nav>
+  <b-navbar toggleable="md" type="dark" variant="light">
+    
+    <b-navbar-toggle target="nav_collapse" class="ml-auto"></b-navbar-toggle>    
+    <b-collapse is-nav id="nav_collapse">
+      <b-navbar-nav >
+        
+      </b-navbar-nav>
+      <!-- Right aligned nav items -->
+      <b-navbar-nav class="ml-auto">
+        <b-nav-form
+          
+        >
+          <b-form-input
+            
           />
         </b-nav-form>
       <b-nav-item-dropdown v-if="isAuthenticated" right>
@@ -118,7 +130,25 @@ export default {
   z-index: 3;
   padding: 8px 60px 8px 30px;
 }
+@media screen and (max-width: 770px) {
+  .navbar {
+    padding-right: 30px;
+  }
+}
+.navbar-collapse {
+  bottom: 0;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  transform: translateX(-100%);
+  height: 100vh;
+  background-color: white;
+  display: none;
+}
 
+.navbar-collapse.show {
+  transform: translateX(-100%);  
+}
 .shrink .search {
   width: 50px;
 }

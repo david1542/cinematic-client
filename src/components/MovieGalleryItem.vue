@@ -81,6 +81,7 @@ export default {
   position: relative;
   margin: 0 12px;
   width: 120px;
+  will-change: transform;
   /* height: 250px; */
   display: flex;
   flex-direction: column;

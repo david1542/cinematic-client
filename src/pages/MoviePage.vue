@@ -158,7 +158,7 @@ export default {
   padding: 60px 40px;
   flex-wrap: wrap;
   z-index: 2;
-  opacity: 1;
+  opacity: 0.1;
   transition: 0.3s;
   animation: fadeOutAnimation 1s ease-out 1s forwards;
 }
