@@ -1,10 +1,5 @@
 <template>
   <AppPage>
-    <div class="header">
-      <h1 class="display-4">
-        Favorites
-      </h1>
-    </div>
     <div class="movie-list">
       <MovieListItem
         v-for="movie in movies"
@@ -47,11 +42,6 @@ export default {
 .page-container {
   height: auto;
 }
-.header {
-  padding: 12px 40px;
-  display: flex;
-  width: 100%;
-}
 
 .header > h1 {
   color: white;
@@ -61,7 +51,7 @@ export default {
 .movie-list {
   display: flex;
   flex-direction: column;
-  padding: 8px 40px;
+  padding: 29px 40px;
   width: 100%;
 }
 </style>

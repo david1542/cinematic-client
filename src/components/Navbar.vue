@@ -1,45 +1,14 @@
 <template>
-  <nav>
-    <div class="navbar-brand">
-      <router-link :to="{name: 'HomePage'}">
-        Movies - Vue.js
-        <i class="fas fa-film"></i>
-      </router-link>
-    </div>
-    <div class="nav-items">
-      <router-link v-if="isAuthenticated" :to="{name: 'FavoritesPage'}">
-        Favorites
-      </router-link>
-      <div class="">
-        <form
-          v-if="isAuthenticated"
-          @submit.prevent="search"
-        >
-          <input 
-            class="mr-sm-4 search"
-            type="text"
-            placeholder="Search"
-            v-model="searchTerm"
-          />
-        </form>
-      </div>
-    </div>
-  </nav>
-  <b-navbar toggleable="md" type="dark" variant="light">
-    
-    <b-navbar-toggle target="nav_collapse" class="ml-auto"></b-navbar-toggle>    
+<b-navbar toggleable="md" type="dark" variant="light">
+    <b-navbar-toggle target="nav_collapse" class="ml-auto"></b-navbar-toggle>
     <b-collapse is-nav id="nav_collapse">
       <b-navbar-nav >
-        
       </b-navbar-nav>
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
         <b-nav-form
-          
         >
-          <b-form-input
-            
-          />
+          <b-form-input />
         </b-nav-form>
       <b-nav-item-dropdown v-if="isAuthenticated" right>
         <!-- Using button-content slot -->
@@ -147,7 +116,7 @@ export default {
 }
 
 .navbar-collapse.show {
-  transform: translateX(-100%);  
+  transform: translateX(-100%);
 }
 .shrink .search {
   width: 50px;

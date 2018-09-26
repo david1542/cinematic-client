@@ -43,8 +43,8 @@ export default {
   flex-basis: 20%;
 }
 .movie-item .movie-img > img {
-  /* width: 250px; */
-  width: 100%;
+  width: 250px;
+  /* width: 100%; */
   height: 100%;
 }
 

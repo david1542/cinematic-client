@@ -1,10 +1,10 @@
 <template>
   <div class="page-container">
-    <Navbar />
+    <!-- <Navbar /> -->
     <main>
       <slot></slot>
     </main>
-    <Footer />
+    <!-- <Footer /> -->
   </div>
 </template>
 
@@ -33,7 +33,6 @@ export default {
   min-height: 100%;
   background-size: 100vw 100vh;
   background-attachment: fixed;
-  padding-top: 50px;
 }
 main {
   margin-bottom: 100px;

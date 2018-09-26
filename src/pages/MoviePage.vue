@@ -1,50 +1,52 @@
 <template>
   <AppPage>
-    <div v-if="specificMovie" class='movie-container'>
-      <img :src='specificMovie.poster' alt=''>
-      <div class='movie-overview'>
-        <h1 class='title'>{{ specificMovie.original_title }}</h1>
-        <h2 class='description'>{{ specificMovie.overview }}</h2>
-        <div class="details">
-          <h2 class="detail"><strong>Year:</strong> {{ specificMovie.release_date }} </h2>
-          <h2 class="detail"><strong>Length:</strong> {{ specificMovie.runtime }} minutes </h2>
-          <h2 class="detail"><strong>Genres:</strong> {{ genres }} </h2>
-          <h2 class="detail"><strong>Actors:</strong> {{ actors }} </h2>
-          <h2 class="detail"><strong>Director:</strong> {{ specificMovie.director }} </h2>
-        </div>
-        <div class="rating">
-          <div class="wrapper">
-            <i class="fas fa-star"></i>
-            <a :href="'https://www.imdb.com/title/' + specificMovie.imdb_id" target="_blank">
-              {{ specificMovie.vote_average }}
-            </a>
+    <div class="wrapper">
+      <div v-if="specificMovie" class='movie-container'>
+        <img :src='specificMovie.poster' alt=''>
+        <div class='movie-overview'>
+          <h1 class='title'>{{ specificMovie.original_title }}</h1>
+          <h2 class='description'>{{ specificMovie.overview }}</h2>
+          <div class="details">
+            <h2 class="detail"><strong>Year:</strong> {{ specificMovie.release_date }} </h2>
+            <h2 class="detail"><strong>Length:</strong> {{ specificMovie.runtime }} minutes </h2>
+            <h2 class="detail"><strong>Genres:</strong> {{ genres }} </h2>
+            <h2 class="detail"><strong>Actors:</strong> {{ actors }} </h2>
+            <h2 class="detail"><strong>Director:</strong> {{ specificMovie.director }} </h2>
+          </div>
+          <div class="rating">
+            <div class="wrapper">
+              <i class="fas fa-star"></i>
+              <a :href="'https://www.imdb.com/title/' + specificMovie.imdb_id" target="_blank">
+                {{ specificMovie.vote_average }}
+              </a>
+            </div>
+          </div>
+          <MovieTorrents v-if="torrents && torrents.length > 0" :torrents="torrents" />
+          <div v-else-if="torrents && torrents.length === 0" class="message">
+            <i class="fas fa-exclamation-circle"></i>
+            No Available Torrents
+          </div>
+          <div v-else class="message">
+            <i class="fas fa-spinner fa-spin"></i>
+            Loading Torrents...
           </div>
         </div>
-        <MovieTorrents v-if="torrents && torrents.length > 0" :torrents="torrents" />
-        <div v-else-if="torrents && torrents.length === 0" class="message">
-          <i class="fas fa-exclamation-circle"></i>
-          No Available Torrents
-        </div>
-        <div v-else class="message">
-          <i class="fas fa-spinner fa-spin"></i>
-          Loading Torrents...
-        </div>
+        <LikeButton
+          class="like-button"
+          :isFavorite="isFavorite"
+          @click="addToFavorites"
+        >
+          <BigHeartButton :isActive="isFavorite" />
+        </LikeButton>
       </div>
-      <LikeButton
-        class="like-button"
-        :isFavorite="isFavorite"
-        @click="addToFavorites"
-      >
-        <BigHeartButton :isActive="isFavorite" />
-      </LikeButton>
-    </div>
-    <div class="recommended">
-      <h2><strong>You may also like...</strong></h2>
-      <MovieGallery :movies="recommendedMovies" />
-    </div>
-    <div v-if="specificMovie" class='trailer'>
-      <iframe frameborder='0' height='100%' width='100%' :src="specificMovie.trailer">
-      </iframe>
+      <div class="recommended">
+        <h2><strong>You may also like...</strong></h2>
+        <MovieGallery :movies="recommendedMovies" />
+      </div>
+      <div v-if="specificMovie" class='trailer'>
+        <iframe frameborder='0' height='100%' width='100%' :src="specificMovie.trailer">
+        </iframe>
+      </div>
     </div>
   </AppPage>
 </template>
@@ -125,6 +127,14 @@ export default {
 </script>
 
 <style scoped>
+.wrapper {
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: 0.3s;
+}
+
+.wrapper:hover {
+  background-color: rgba(0, 0, 0, 0);
+}
 .like-button {
   position: absolute;
   right: 65px;
