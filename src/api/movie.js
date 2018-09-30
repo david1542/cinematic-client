@@ -5,7 +5,7 @@ import { popularMoviesUrl, specificMovieUrl,
   generateYoutubeUrl, moviesQueryUrl,
   addTorrentMagnet, getGenres, getMoviesByGenre,
   getRecommendedMovies, topRatedMoviesUrl,
-  getMovieCast } from '../queries'
+  getMovieCast, searchSubtitles } from '../queries'
 import {
   SERVER_URL
 } from '../config'
@@ -28,6 +28,19 @@ export default {
     axios({
       method: 'GET',
       url: SERVER_URL + '/videos/torrents?term=' + term,
+      headers: { token }
+    }).then(res => {
+      success(res.data)
+    }).catch(err => {
+      failure(err)
+    })
+  },
+  fetchSubtitles (options, success, failure) {
+    const token = localStorage.getItem('user-token')
+    const url = searchSubtitles(options)
+    axios({
+      method: 'GET',
+      url,
       headers: { token }
     }).then(res => {
       success(res.data)

@@ -55,3 +55,8 @@ export const getTorrentsUrl = (title) => {
 export const addTorrentMagnet = (magnet) => {
   return SERVER_URL + '/videos/add/' + magnet
 }
+
+export const searchSubtitles = (options) => {
+  const query = Object.keys(options).map(key => `${key}=${options[key]}`).join('&')
+  return SERVER_URL + '/videos/subtitles?' + query
+}

@@ -26,10 +26,10 @@
         <span v-else>Sign Up!</span>
       </button>
     </form>
-    <div class="login-reference">
+    <!-- <div class="login-reference">
       <h2>Registered user? Sign in here</h2>
       <router-link to="/login" class="btn btn-primary">Sign In</router-link>
-    </div>
+    </div> -->
   </AppPage>
 </template>
 

@@ -1,10 +1,110 @@
 const express = require('express')
 const router = express.Router()
+const fs = require('fs')
+const https = require('https')
+const crypto = require('crypto')
 const WebTorrent = require('webtorrent')
 const torrentSearch = require('torrent-search-api')
 const async = require('async')
+const OS = require('opensubtitles-api')
+const path = require('path')
+const srt2vtt = require('srt2vtt')
+const streamifier = require('streamifier')
 const auth = require('../middlewares/auth')
+const config = require('../config')
+const utils = require('../utils')
+const OpenSubtitles = new OS(config.OPENSUBTITLES_SETTINGS)
+
+// Login to open subtitles api
+OpenSubtitles.login()
+
 const connectedUserClients = new Map()
+
+router.get('/subtitles', async function (req, res, next) {
+  if (!req.query.filename || !req.query.imdbid) return res.sendStatus(400)
+
+  const options = {
+    ...req.query
+  }
+
+  if (!options.limit) {
+    options.limit = 'all'
+  }
+
+  let subtitles
+  try {
+    subtitles = await OpenSubtitles.search(options)
+  } catch (err) {
+    return res.sendStatus(500)
+  }
+
+  const lang = subtitles[options.langcode]
+  const arrayOfNames = lang.map(file => {
+    const array = file.filename.split(/[.-]+/)
+    array.pop()
+
+    return array
+  })
+
+  let highestMatch = 0
+  let bestIndex = 0
+
+  arrayOfNames.forEach((nameArr, index) => {
+    let counter = 0
+    nameArr.forEach(part => {
+      if (options.filename.includes(part)) {
+        counter++
+      }
+    })
+
+    if (counter > highestMatch) {
+      bestIndex = index
+      highestMatch = counter
+    } else if (counter === highestMatch) {
+      if (lang[index].downloads > lang[bestIndex].downloads) {
+        bestIndex = index
+        highestMatch = counter
+      }
+    }
+  })
+
+  const match = lang[bestIndex]
+  const parts = match.filename.split('.')
+  const fileType = '.' + parts[parts.length - 1]
+  const fileName = crypto.randomBytes(40).toString('hex')
+  const appDir = path.dirname(require.main.filename)
+  const remoteDir = appDir + '/tmp/' + fileName + fileType
+  const tmpFile = fs.createWriteStream(remoteDir)
+
+  tmpFile.on('open', () => {
+    https.get(match.url, response => {
+      response.pipe(tmpFile)
+    })
+  })
+
+  tmpFile.on('finish', () => {
+    var data = fs.readFileSync(remoteDir)
+
+    srt2vtt(data, 1255, (err, vttData) => {
+      if (err) res.sendStatus(500)
+      const outputDir = appDir + '/tmp/' + fileName + '.vtt'
+
+      fs.writeFileSync(outputDir, vttData)
+
+      const subtitlesStream = streamifier.createReadStream(vttData)
+      const subtitlesName = parts.slice(0, parts.length - 2).join('.') + '.vtt'
+      res.set('Content-Type', 'mime/vtt')
+      res.set('Content-Disposition', 'attachment; filename=' + subtitlesName)
+
+      // Sending files to the user
+      subtitlesStream.pipe(res)
+
+      // subtitlesStream.on('end', () => {
+      //   fs.unlinkSync(appDir + '/tmp' + file.name)
+      // })
+    })
+  })
+})
 
 router.use(auth.tokenMiddleware)
 router.use(function (req, res, next) {
@@ -52,9 +152,15 @@ function createClient (userId) {
 }
 
 router.get('/stream', function (req, res) {
-  const { client } = req.client
-  const { magnet } = req.query
+  const {
+    client
+  } = req.client
+  const {
+    magnet
+  } = req.query
   let torrent = client.get(magnet)
+
+  if (!torrent) return res.sendStatus(404)
 
   let file = torrent.files[0]
 
@@ -102,13 +208,26 @@ router.get('/stream', function (req, res) {
 
 router.post('/add/:magnet', function (req, res) {
   let magnet = req.params.magnet
-  const { client } = req.client
+  const {
+    client
+  } = req.client
 
   const torrent = client.get(magnet)
   if (torrent) return res.json(magnet)
 
-  client.add(magnet, function () {
-    res.json(magnet)
+  client.add(magnet, function (torrent) {
+    let file = torrent.files[0]
+
+    for (let i = 1; i < torrent.files.length; i++) {
+      if (torrent.files[i].length > file.length) {
+        file = torrent.files[i]
+      }
+    }
+
+    res.json({
+      magnet,
+      fileName: file.name
+    })
   })
 })
 
@@ -121,8 +240,15 @@ router.get('/torrents', async function (req, res) {
   torrentSearch.enableProvider('KickassTorrents')
   torrentSearch.enableProvider('1337x')
 
-  const torrents = await torrentSearch.search(term, 'Movies')
-  const filteredTorrents = torrents.filter(torrent => (
+  const torrents = torrentSearch.search(term, 'Movies')
+  const subtitles = OpenSubtitles.search({
+    extensions: ['srt', 'vtt'], // Accepted extensions, defaults to 'srt'.
+    imdbid: 'tt5463162', // 'tt528809' is fine too.
+    query: term // Text-based query, this is not recommended.
+  })
+
+  const result = await Promise.all([torrents, subtitles])
+  const filteredTorrents = result[0].filter(torrent => (
     torrent.title.toLowerCase().includes(term.toLowerCase())
   )).sort(function (a, b) {
     if (a.seeds > b.seeds) {
@@ -131,6 +257,15 @@ router.get('/torrents', async function (req, res) {
       return 1
     }
   }).slice(0, 4)
+
+  const availableLangs = Object.keys(result[1]).map(code => {
+    const lang = utils.isoLangs[code]
+    const name = lang ? lang.nativeName || lang.name : null
+    return {
+      name,
+      code
+    }
+  })
 
   if (!filteredTorrents) {
     return res.sendStatus(500)
@@ -145,7 +280,10 @@ router.get('/torrents', async function (req, res) {
   }, function (err, torrents) {
     if (err) return res.sendStatus(500)
 
-    res.json(torrents)
+    res.json({
+      torrents,
+      langs: availableLangs
+    })
   })
 })
 

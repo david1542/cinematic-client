@@ -19,6 +19,8 @@
     "express": "^4.16.3",
     "mongoose": "^5.2.12",
     "mongoose-timestamps": "0.0.1",
+    "opensubtitles-api": "^4.1.0",
+    "streamifier": "^0.1.1",
     "torrent-search-api": "^2.0.3",
     "webtorrent": "^0.102.4"
   },

@@ -61,3 +61,13 @@ export const getRecommended = (id) => ({
 export const getTopRated = () => ({
   type: 'movie/' + ACTIONS.GET_TOP_RATED_MOVIES
 })
+
+export const changeSettings = settings => ({
+  type: 'movie/' + ACTIONS.CHANGE_SETTINGS,
+  payload: { settings }
+})
+
+export const getSubtitles = options => ({
+  type: 'movie/' + ACTIONS.FETCH_SUBTITLES,
+  payload: { options }
+})

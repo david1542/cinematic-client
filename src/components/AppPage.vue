@@ -1,20 +1,17 @@
 <template>
   <div class="page-container">
-    <!-- <Navbar /> -->
     <main>
       <slot></slot>
     </main>
-    <!-- <Footer /> -->
+    <Footer />
   </div>
 </template>
 
 <script>
-import Navbar from './Navbar'
 import Footer from './Footer'
 export default {
   name: 'AppPage',
   components: {
-    Navbar,
     Footer
   }
 }
@@ -35,6 +32,8 @@ export default {
   background-attachment: fixed;
 }
 main {
-  margin-bottom: 100px;
+  padding-top: 64px;
+  padding-bottom: 150px;
+  position: relative;
 }
 </style>

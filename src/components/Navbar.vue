@@ -1,36 +1,78 @@
 <template>
-<b-navbar toggleable="md" type="dark" variant="light">
-    <b-navbar-toggle target="nav_collapse" class="ml-auto"></b-navbar-toggle>
-    <b-collapse is-nav id="nav_collapse">
-      <b-navbar-nav >
-      </b-navbar-nav>
-      <!-- Right aligned nav items -->
-      <b-navbar-nav class="ml-auto">
-        <b-nav-form
+  <div>
+    <v-navigation-drawer
+      :mini-variant.sync="miniVariant"
+      :clipped="clipped"
+      v-model="drawer"
+      temporary
+      fixed
+      app
+      dark
+    >
+      <v-list>
+        <v-list-tile
+          router
+          :to="item.to"
+          :key="i"
+          @click.stop="item.title === 'Logout' && logout()"
+          v-for="(item, i) in items"
+          v-show="item.auth ? isAuthenticated : true"
+          exact
+          dark
         >
-          <b-form-input />
-        </b-nav-form>
-      <b-nav-item-dropdown v-if="isAuthenticated" right>
-        <!-- Using button-content slot -->
-        <template slot="button-content">
-          <h4 class="text-light user-dropdown-button">
-            <i class="fas fa-user" />
-          </h4>
-        </template>
-        <b-dropdown-item href="#" class="dropdown-title">Hello {{ getUsername }}!</b-dropdown-item>
-        <b-dropdown-item href="#">Profile</b-dropdown-item>
-        <b-dropdown-item href="#" v-on:click="logout">Signout</b-dropdown-item>
-      </b-nav-item-dropdown>
-      <div v-else right class="guest-links">
-        <h4 class="text-light">
-          <router-link to="/login">Login</router-link>
-          <span class="line"></span>
-          <router-link to="/register">Register</router-link>
-        </h4>
+          <v-list-tile-action>
+            <v-icon v-html="item.icon"></v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title v-text="item.title"></v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+    </v-navigation-drawer>
+    <v-toolbar app dark>
+      <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-title class="white--text">
+        <router-link :to="{name: 'HomePage'}" class="text-light brand">
+          Cinematic
+        </router-link>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <div class="nav-items-wrapper" v-if="isAuthenticated">
+        <v-btn
+          icon
+          v-if="!searchExpanded"
+          @click="showSearch"
+        >
+          <v-icon>
+            fas fa-search
+          </v-icon>
+        </v-btn>
+        <v-text-field
+          v-else
+          v-model="searchTerm"
+          @blur="hideSearch"
+          @keydown.enter="search"
+          placeholder="Type something..."
+          color="error"
+          v-focus
+        />
       </div>
-      </b-navbar-nav>
-    </b-collapse>
-  </b-navbar>
+      <template v-else>
+        <v-toolbar-items>
+          <!-- <v-btn> -->
+            <router-link :to="{name: 'RegisterPage'}">
+              Register
+            </router-link>
+          <!-- </v-btn> -->
+          <!-- <v-btn> -->
+            <router-link :to="{name: 'LoginPage'}">
+              Login
+            </router-link>
+          <!-- </v-btn> -->
+        </v-toolbar-items>
+      </template>
+    </v-toolbar>
+  </div>
 </template>
 
 <script>
@@ -41,28 +83,36 @@ export default {
   data () {
     return {
       searchTerm: '',
-      lastScrollY: 0,
-      shrink: false
+      drawer: false,
+      searchExpanded: false,
+      clipped: false,
+      miniVariant: false,
+      items: [
+        { icon: 'fas fa-home', title: 'Home', to: '/' },
+        { icon: 'fas fa-film', title: 'Favorites', to: '/favorites', auth: true },
+        { icon: 'fas fa-sign-out-alt', title: 'Logout', auth: true }
+      ]
     }
   },
-  mounted () {
-    window.addEventListener('scroll', function (e) {
-      var scrollY = window.scrollY
-      console.log(scrollY)
-      if (scrollY > this.lastScrollY) {
-        this.shrink = true
-      } else {
-        this.shrink = false
+  directives: {
+    focus: {
+      inserted (el) {
+        const classNames = '.' + el.className.split(' ').join('.')
+        el.querySelector(classNames + ' input').focus()
       }
-
-      this.lastScrollY = scrollY
-    }.bind(this))
+    }
   },
   methods: {
     logout () {
       this.$store.dispatch(logoutUser()).then(() => {
         this.$router.push('/login')
       })
+    },
+    showSearch () {
+      this.searchExpanded = true
+    },
+    hideSearch () {
+      this.searchExpanded = false
     },
     search () {
       this.$router.push({
@@ -71,6 +121,8 @@ export default {
           query: this.searchTerm
         }
       })
+      this.searchExpanded = false
+      this.searchTerm = ''
     }
   },
   computed: {
@@ -199,5 +251,46 @@ export default {
 
 .search::-ms-input-placeholder { /* Microsoft Edge */
     color: white;
+}
+
+.v-list__tile {
+  cursor: pointer;
+}
+
+.v-list__tile:hover {
+  background: hsla(0,0%,100%,.08);
+}
+@media screen and (max-width: 425px) {
+  .theme--dark.v-navigation-drawer {
+    width: 60% !important;
+  }
+}
+
+.nav-items-wrapper {
+  width: 400px;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.nav-items-wrapper input {
+  border-color: red !important;
+}
+.v-btn__content {
+  width: 100%;
+  height: 100%;
+}
+
+.v-toolbar__items > a {
+  padding: 16px;
+}
+
+.v-toolbar__items > a,
+.v-toolbar__items > a:hover {
+  color: white;
+  text-decoration: none;
+  text-transform: capitalize;
+  font-size: 16px;
+  width: 100%;
+  height: 100%;
 }
 </style>

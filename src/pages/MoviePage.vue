@@ -14,22 +14,14 @@
             <h2 class="detail"><strong>Director:</strong> {{ specificMovie.director }} </h2>
           </div>
           <div class="rating">
-            <div class="wrapper">
+            <div class="rating-wrapper">
               <i class="fas fa-star"></i>
               <a :href="'https://www.imdb.com/title/' + specificMovie.imdb_id" target="_blank">
                 {{ specificMovie.vote_average }}
               </a>
             </div>
           </div>
-          <MovieTorrents v-if="torrents && torrents.length > 0" :torrents="torrents" />
-          <div v-else-if="torrents && torrents.length === 0" class="message">
-            <i class="fas fa-exclamation-circle"></i>
-            No Available Torrents
-          </div>
-          <div v-else class="message">
-            <i class="fas fa-spinner fa-spin"></i>
-            Loading Torrents...
-          </div>
+          <MovieSettingsBar />
         </div>
         <LikeButton
           class="like-button"
@@ -53,10 +45,10 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import MovieTorrents from '@/components/MovieTorrents'
 import LikeButton from '@/components/LikeButton'
 import BigHeartButton from '@/components/BigHeartButton'
 import MovieGallery from '@/components/MovieGallery'
+import MovieSettingsBar from '@/components/MovieSettingsBar'
 import { getMovie, addToFavorites,
   removeFromFavorites, getRecommended } from '@/actions/creators'
 export default {
@@ -67,10 +59,10 @@ export default {
     }
   },
   components: {
-    MovieTorrents,
     LikeButton,
     BigHeartButton,
-    MovieGallery
+    MovieGallery,
+    MovieSettingsBar
   },
   data: function () {
     return {
@@ -103,8 +95,7 @@ export default {
   computed: {
     ...mapState('movie', [
       'specificMovie',
-      'recommendedMovies',
-      'torrents'
+      'recommendedMovies'
     ]),
     ...mapGetters('user', [
       'isMovieInFavorites'
@@ -128,17 +119,28 @@ export default {
 
 <style scoped>
 .wrapper {
-  background-color: rgba(0, 0, 0, 0.3);
   transition: 0.3s;
+  margin-top: -64px;
+  padding-top: 40px;
 }
 
-.wrapper:hover {
+.wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: -1;
+}
+.wrapper:hover::after {
   background-color: rgba(0, 0, 0, 0);
 }
 .like-button {
   position: absolute;
   right: 65px;
-  top: 40px;
+  top: 100px;
   cursor: pointer;
 }
 .trailer {
@@ -178,7 +180,7 @@ export default {
   width: 100%;
   margin: 80px 0 100px 0;
   flex-direction: column;
-  opacity: 0.3;
+  /* opacity: 0.3; */
   transition: 0.3s;
 }
 
@@ -191,8 +193,7 @@ export default {
   text-align: left;
 }
 
-.movie-container:hover,
-.recommended:hover {
+.movie-container:hover {
   opacity: 1;
 }
 
@@ -208,7 +209,7 @@ export default {
 
 .movie-container > .movie-overview > .title {
   color: white;
-  font-size: 30px;
+  font-size: 30px !important;
   font-weight: bold;
   text-align: left;
 }
@@ -223,19 +224,6 @@ export default {
 .movie-container > .movie-overview > .details {
   margin-top: 20px;
 }
-.movie-container > .movie-overview > .message {
-  position: absolute;
-  color: white;
-  font-weight: bold;
-  bottom: 0;
-  left: 0;
-  padding-left: 40px;
-}
-
-.movie-container > .movie-overview > .message > .fas {
-  font-size: 20px;
-  margin-right: 4px;
-}
 
 .movie-container > .movie-overview > .rating {
   position: absolute;
@@ -246,14 +234,14 @@ export default {
   z-index: 3;
 }
 
-.movie-container > .movie-overview > .rating > .wrapper {
+.movie-container > .movie-overview > .rating > .rating-wrapper {
   position: relative;
   display: inline-block;
   width: 100%;
   height: 100%;
 }
 
-.movie-container > .movie-overview > .rating > .wrapper > i {
+.movie-container > .movie-overview > .rating > .rating-wrapper > i {
   position: absolute;
   color: #F9C504;
   font-size: 45px;
@@ -265,7 +253,7 @@ export default {
   display: block;
 }
 
-.movie-container > .movie-overview > .rating > .wrapper > a {
+.movie-container > .movie-overview > .rating > .rating-wrapper > a {
   text-decoration: none;
   position: absolute;
   left: 0;

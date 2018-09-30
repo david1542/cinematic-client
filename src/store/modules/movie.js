@@ -10,13 +10,16 @@ import { FETCH_POPULAR_MOVIES, FETCH_POPULAR_MOVIES_SUCCESS,
   GET_MOVIES_CATEGORIES_FAILURE, GET_RECOMMENDED_MOVIES,
   GET_RECOMMENDED_MOVIES_SUCCESS, GET_RECOMMENDED_MOVIES_FAILURE,
   GET_TOP_RATED_MOVIES, GET_TOP_RATED_MOVIES_SUCCESS,
-  GET_TOP_RATED_MOVIES_FAILURE } from '../../actions'
+  GET_TOP_RATED_MOVIES_FAILURE, SET_AVAILABLE_LANGS,
+  CHANGE_SETTINGS, FETCH_SUBTITLES, FETCH_SUBTITLES_SUCCESS,
+  FETCH_SUBTITLES_FAILURE } from '../../actions'
 
 const state = {
   popularMovies: null,
   popularMoviesError: null,
   specificMovie: null,
-  specificMovieError: null
+  specificMovieError: null,
+  availableLangs: null
 }
 
 const mutations = {
@@ -50,8 +53,9 @@ const mutations = {
   [SEARCH_TORRENTS_FAILURE] (state, { error }) {
     state.torrentsError = error
   },
-  [ADD_TORRENT_SUCCESS] (state, { hash }) {
-    state.selectedHash = hash
+  [ADD_TORRENT_SUCCESS] (state, { magnet, fileName }) {
+    state.selectedHash = magnet
+    state.selectedFileName = fileName
   },
   [ADD_TORRENT_FAILURE] (state, { error }) {
     state.selectedHashError = error
@@ -73,6 +77,18 @@ const mutations = {
   },
   [GET_TOP_RATED_MOVIES_FAILURE] (state, { error }) {
     state.topRatedMoviesError = error
+  },
+  [SET_AVAILABLE_LANGS] (state, { langs }) {
+    state.availableLangs = langs
+  },
+  [CHANGE_SETTINGS] (state, { settings }) {
+    state.movieSettings = settings
+  },
+  [FETCH_SUBTITLES_SUCCESS] (state, { file }) {
+    state.subtitlesFile = file
+  },
+  [FETCH_SUBTITLES_FAILURE] (state, { error }) {
+    state.subtitlesError = error
   }
 }
 
@@ -86,13 +102,31 @@ const actions = {
       )
     })
   },
+  [CHANGE_SETTINGS] ({ commit }, { payload }) {
+    commit(CHANGE_SETTINGS, payload)
+  },
+  [FETCH_SUBTITLES] ({ commit }, { payload }) {
+    return new Promise((resolve, reject) => {
+      movie.fetchSubtitles(
+        payload.options,
+        (file) => {
+          commit(FETCH_SUBTITLES_SUCCESS, { file })
+          reject(file)
+        },
+        (error) => {
+          commit(FETCH_SUBTITLES_FAILURE, { error })
+          reject(error)
+        }
+      )
+    })
+  },
   [ADD_TORRENT] ({ commit }, { payload }) {
     return new Promise((resolve, reject) => {
       movie.addTorrent(
         payload.hash,
-        (hash) => {
-          commit(ADD_TORRENT_SUCCESS, { hash })
-          resolve(hash)
+        ({ magnet, fileName }) => {
+          commit(ADD_TORRENT_SUCCESS, { magnet, fileName })
+          resolve(magnet)
         },
         (error) => {
           commit(ADD_TORRENT_FAILURE, { error })
@@ -180,8 +214,9 @@ const actions = {
     return new Promise((resolve, reject) => {
       movie.getTorrents(
         payload.title,
-        (torrents) => {
+        ({ torrents, langs }) => {
           commit(SEARCH_TORRENTS_SUCCESS, { torrents })
+          commit(SET_AVAILABLE_LANGS, { langs })
           resolve(torrents)
         },
         (error) => {
@@ -213,5 +248,4 @@ export default {
   state,
   mutations,
   actions
-//   getters
 }
