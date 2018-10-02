@@ -24,12 +24,12 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use('/users', usersRoutes)
+app.use('/videos', videosRoutes)
 
 app.get('/', function (req, res) {
   res.send('hello')
 })
 
-app.use('/videos', videosRoutes)
 app.listen(4000, function () {
   console.log('Server started on port 4000')
 })
