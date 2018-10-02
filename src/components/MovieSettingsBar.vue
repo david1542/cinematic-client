@@ -6,19 +6,10 @@
         @change="torrentChanged"
       />
       <LanguagePicker
-        :langs="langs"
+        :langs="availableLangs"
         @change="languageChanged"
       />
-      <button class="btn btn-primary" @click="chooseTorrent" v-if="!readyToWatch">
-        <span v-if="loading">
-          <i class="fas fa-spinner fa-spin"></i>
-          Adding Torrent
-        </span>
-        <span v-else>
-          Choose Torrent
-        </span>
-      </button>
-      <button class="btn btn-success" @click="watchMovie" v-else>
+      <button class="btn btn-success" @click="watchMovie">
         Watch Movie
       </button>
     </div>
@@ -34,12 +25,19 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { addTorrent, changeSettings } from '../actions/creators'
+import { changeSettings } from '../actions/creators'
 import TorrentsPicker from './TorrentsPicker'
 import LanguagePicker from './LanguagePicker'
 export default {
   name: 'MovieSettingsBar',
+  props: {
+    torrents: {
+      type: Array
+    },
+    langs: {
+      type: Array
+    }
+  },
   components: {
     TorrentsPicker,
     LanguagePicker
@@ -61,33 +59,15 @@ export default {
     },
     watchMovie () {
       const settings = {
-        language: this.langs[this.languageIndex]
+        language: this.availableLangs[this.languageIndex]
       }
       this.$store.dispatch(changeSettings(settings))
-      this.$router.push({name: 'MoviePlayer'})
-    },
-    chooseTorrent () {
-      // Notifying the parent element to display the loader
-      this.$emit('add-torrent')
-
-      const selectedTorrent = this.torrents[this.torrentIndex]
-      this.loading = true
-      this.$store.dispatch(addTorrent(selectedTorrent.infoHash)).then(() => {
-        this.loading = false
-        this.readyToWatch = true
-      }).catch(err => {
-        console.log(err)
-        this.readyToWatch = false
-      })
+      this.$emit('add-torrent', this.torrentIndex)
     }
   },
   computed: {
-    ...mapState('movie', [
-      'torrents',
-      'availableLangs'
-    ]),
-    langs () {
-      return this.availableLangs.filter(lang => lang.name && lang.code)
+    availableLangs () {
+      return this.langs.filter(lang => lang.name && lang.code)
     }
   }
 }

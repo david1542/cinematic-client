@@ -2,9 +2,14 @@
   <AppPage>
     <MovieLoader
       :loading="loading"
-      :stats="stats"
+      :progress="progress"
     />
-    <div class="wrapper">
+    <MoviePlayer
+      v-show="readyToWatch"
+      :startPlay="readyToWatch"
+      :startStream.sync="startStream"
+    />
+    <div v-if="!readyToWatch" class="wrapper">
       <div v-if="specificMovie" class='movie-container'>
         <img :src='specificMovie.poster' alt=''>
         <div class='movie-overview'>
@@ -25,7 +30,11 @@
               </a>
             </div>
           </div>
-          <MovieSettingsBar @add-torrent="checkProgress" />
+          <MovieSettingsBar
+            @add-torrent="addTorrent"
+            :torrents="torrents"
+            :langs="availableLangs"
+          />
         </div>
         <LikeButton
           class="like-button"
@@ -49,6 +58,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
+import MoviePlayer from '@/components/MoviePlayer'
 import MovieLoader from '@/components/MovieLoader'
 import LikeButton from '@/components/LikeButton'
 import BigHeartButton from '@/components/BigHeartButton'
@@ -59,7 +69,8 @@ import {
   addToFavorites,
   removeFromFavorites,
   getRecommended,
-  getClientStats
+  getClientStats,
+  addTorrent
 } from '@/actions/creators'
 export default {
   name: 'MoviePage',
@@ -69,6 +80,7 @@ export default {
     }
   },
   components: {
+    MoviePlayer,
     MovieLoader,
     LikeButton,
     BigHeartButton,
@@ -80,7 +92,10 @@ export default {
       trailer: null,
       error: null,
       loading: false,
-      stats: {}
+      readyToWatch: false,
+      startStream: false,
+      percentThreshold: 5,
+      progress: 0
     }
   },
   mounted () {
@@ -101,22 +116,27 @@ export default {
     },
     checkProgress () {
       this.loading = true
-      const progressTimer = setTimeout(() => {
+      setTimeout(() => {
         console.log('Dispatching stats actions to see what\'s going on')
         this.$store.dispatch(getClientStats()).then(({ stats, status }) => {
-          if (status === 'completed') {
-            this.stats.progress = 100
-            const finish = setTimeout(() => {
-              this.loading = false
-              clearTimeout(finish)
-              clearTimeout(progressTimer)
-            }, 2000)
+          this.progress = stats.progress * 100 / this.percentThreshold
+          if (this.progress >= 100) {
+            this.loading = false
+            this.readyToWatch = true
           } else {
             this.stats = stats
             this.checkProgress()
           }
         })
       }, 1000)
+    },
+    addTorrent (torrentIndex) {
+      const selectedTorrent = this.torrents[torrentIndex]
+      this.loading = true
+      this.$store.dispatch(addTorrent(selectedTorrent.infoHash)).then(() => {
+        this.startStream = true
+        this.checkProgress()
+      })
     },
     addToFavorites () {
       const exists = this.isMovieInFavorites(this.id)
@@ -133,7 +153,12 @@ export default {
     }
   },
   computed: {
-    ...mapState('movie', ['specificMovie', 'recommendedMovies']),
+    ...mapState('movie', [
+      'specificMovie',
+      'recommendedMovies',
+      'torrents',
+      'availableLangs'
+    ]),
     ...mapGetters('user', ['isMovieInFavorites']),
     isFavorite () {
       return this.isMovieInFavorites(this.specificMovie.id)

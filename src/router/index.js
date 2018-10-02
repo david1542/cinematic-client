@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import HomePage from '@/pages/HomePage'
 import SearchPage from '@/pages/SearchPage'
 import MoviePage from '@/pages/MoviePage'
-import MoviePlayerPage from '@/pages/MoviePlayerPage'
 import FavoritesPage from '@/pages/FavoritesPage'
 import RegisterPage from '@/pages/RegisterPage'
 import LoginPage from '@/pages/LoginPage'
@@ -47,13 +46,6 @@ export default new Router({
       path: '/movie/:id',
       name: 'MoviePage',
       component: MoviePage,
-      beforeEnter: ifAuthenticated,
-      props: true
-    },
-    {
-      path: '/watch',
-      name: 'MoviePlayer',
-      component: MoviePlayerPage,
       beforeEnter: ifAuthenticated,
       props: true
     },

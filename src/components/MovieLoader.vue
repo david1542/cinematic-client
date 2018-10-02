@@ -5,7 +5,7 @@
   >
     <vue-circle
       ref="movieCircle"
-      :progress="progress"
+      :progress="progressUpdate"
       :size="200"
       :reverse="false"
       line-cap="round"
@@ -34,9 +34,9 @@ export default {
       required: true,
       type: Boolean
     },
-    stats: {
+    progress: {
       required: true,
-      type: Object
+      type: Number
     }
   },
   data () {
@@ -53,8 +53,8 @@ export default {
     }
   },
   computed: {
-    progress () {
-      let value = this.stats ? this.stats.progress : 0
+    progressUpdate () {
+      let value = this.progress || 0
       value = value === 0 ? 1.5 : value
       if (this.$refs.movieCircle) {
         this.$refs.movieCircle.updateProgress(value)

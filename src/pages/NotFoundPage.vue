@@ -5,7 +5,7 @@
     </audio>
 
     <div class="container">
-      <div  class="error">
+      <div  class="error-container">
         <p class="p">4</p>
         <span class="dracula">
           <div class="con">
@@ -47,7 +47,7 @@ export default {
   position: absolute;
 }
 
-.error {
+.error-container {
   width: 100%;
   height: auto;
   margin: 0 auto;
@@ -63,7 +63,7 @@ export default {
   overflow: hidden;
 }
 
-.error .p {
+.error-container .p {
   height: 100%;
   color: #c0d7dd;
   font-size: 280px;
@@ -199,7 +199,7 @@ export default {
   transform: translateY(-50px);
 }
 
-.error p.page-msg {
+.error-container p.page-msg {
   text-align: center;
   color: #c0d7dd;
   font-size: 30px;

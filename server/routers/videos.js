@@ -167,7 +167,7 @@ function createClient (userId) {
   client.on('torrent', function () {
     const userClient = connectedUserClients.get(String(userId))
 
-    userClient.status = 'completed'
+    userClient.status = 'downloading'
     console.log('Torrent added')
   })
 
@@ -180,6 +180,7 @@ function createClient (userId) {
 
     const userClient = connectedUserClients.get(String(userId))
     userClient.stats = stats
+
     console.log(stats)
   })
 
@@ -274,8 +275,6 @@ router.post('/add/:magnet', function (req, res) {
     processTorrent(torrent)
     return
   }
-
-  client.status = 'downloading'
 
   client.add(magnet, function (addedTorrent) {
     processTorrent(addedTorrent)
