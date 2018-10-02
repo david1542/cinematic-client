@@ -67,6 +67,9 @@ export default {
       this.$router.push({name: 'MoviePlayer'})
     },
     chooseTorrent () {
+      // Notifying the parent element to display the loader
+      this.$emit('add-torrent')
+
       const selectedTorrent = this.torrents[this.torrentIndex]
       this.loading = true
       this.$store.dispatch(addTorrent(selectedTorrent.infoHash)).then(() => {

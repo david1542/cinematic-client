@@ -12,7 +12,7 @@ import { FETCH_POPULAR_MOVIES, FETCH_POPULAR_MOVIES_SUCCESS,
   GET_TOP_RATED_MOVIES, GET_TOP_RATED_MOVIES_SUCCESS,
   GET_TOP_RATED_MOVIES_FAILURE, SET_AVAILABLE_LANGS,
   CHANGE_SETTINGS, FETCH_SUBTITLES, FETCH_SUBTITLES_SUCCESS,
-  FETCH_SUBTITLES_FAILURE } from '../../actions'
+  FETCH_SUBTITLES_FAILURE, PAUSE_TORRENT, GET_CLIENT_STATS } from '../../actions'
 
 const state = {
   popularMovies: null,
@@ -104,6 +104,23 @@ const actions = {
   },
   [CHANGE_SETTINGS] ({ commit }, { payload }) {
     commit(CHANGE_SETTINGS, payload)
+  },
+  [PAUSE_TORRENT] (store, { payload }) {
+    return new Promise((resolve, reject) => {
+      movie.pauseTorrent(
+        payload.magnet,
+        () => resolve(),
+        (err) => reject(err)
+      )
+    })
+  },
+  [GET_CLIENT_STATS] (store, { payload }) {
+    return new Promise((resolve, reject) => {
+      movie.getStats(
+        (stats) => resolve(stats),
+        (error) => reject(error)
+      )
+    })
   },
   [FETCH_SUBTITLES] ({ commit }, { payload }) {
     return new Promise((resolve, reject) => {

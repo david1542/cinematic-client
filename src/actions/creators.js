@@ -71,3 +71,12 @@ export const getSubtitles = options => ({
   type: 'movie/' + ACTIONS.FETCH_SUBTITLES,
   payload: { options }
 })
+
+export const pauseTorrent = magnet => ({
+  type: 'movie/' + ACTIONS.PAUSE_TORRENT,
+  payload: { magnet }
+})
+
+export const getClientStats = () => ({
+  type: 'movie/' + ACTIONS.GET_CLIENT_STATS
+})

@@ -15,14 +15,24 @@ const config = require('../config')
 const utils = require('../utils')
 const OpenSubtitles = new OS(config.OPENSUBTITLES_SETTINGS)
 
-// Login to open subtitles api
-OpenSubtitles.login()
+function tryConnect () {
+  try {
+    // Login to open subtitles api
+    OpenSubtitles.login()
+  } catch (err) {
+    console.log('Error in connecting to Open Subtitles')
+    tryConnect()
+  }
+}
 
+tryConnect()
+console.log('Connected to Open Subtitles')
 const connectedUserClients = new Map()
 
 router.get('/subtitles', async function (req, res, next) {
-  if (!req.query.filename || !req.query.imdbid) return res.sendStatus(400)
+  if (!req.query.query && !req.query.langcode) return res.sendStatus(400)
 
+  const { filename } = req.query
   const options = {
     ...req.query
   }
@@ -30,7 +40,11 @@ router.get('/subtitles', async function (req, res, next) {
   if (!options.limit) {
     options.limit = 'all'
   }
+  if (!options.extensions) {
+    options.extensions = ['srt', 'vtt']
+  }
 
+  options.filename = undefined
   let subtitles
   try {
     subtitles = await OpenSubtitles.search(options)
@@ -39,6 +53,9 @@ router.get('/subtitles', async function (req, res, next) {
   }
 
   const lang = subtitles[options.langcode]
+
+  if (!lang) return res.sendStatus(404)
+
   const arrayOfNames = lang.map(file => {
     const array = file.filename.split(/[.-]+/)
     array.pop()
@@ -49,10 +66,15 @@ router.get('/subtitles', async function (req, res, next) {
   let highestMatch = 0
   let bestIndex = 0
 
+  const likeWords = {
+    'x264': 'h264',
+    'h264': 'x264'
+  }
+
   arrayOfNames.forEach((nameArr, index) => {
     let counter = 0
     nameArr.forEach(part => {
-      if (options.filename.includes(part)) {
+      if (filename.includes(part) || filename.includes(likeWords[part.toLowerCase()])) {
         counter++
       }
     })
@@ -76,17 +98,25 @@ router.get('/subtitles', async function (req, res, next) {
   const remoteDir = appDir + '/tmp/' + fileName + fileType
   const tmpFile = fs.createWriteStream(remoteDir)
 
-  tmpFile.on('open', () => {
+  function tryDownload () {
     https.get(match.url, response => {
+      if (!(response.pipe)) {
+        tryDownload()
+      }
+
       response.pipe(tmpFile)
     })
+  }
+
+  tmpFile.on('open', () => {
+    tryDownload()
   })
 
   tmpFile.on('finish', () => {
     var data = fs.readFileSync(remoteDir)
 
     srt2vtt(data, 1255, (err, vttData) => {
-      if (err) res.sendStatus(500)
+      if (err) return res.sendStatus(500)
       const outputDir = appDir + '/tmp/' + fileName + '.vtt'
 
       fs.writeFileSync(outputDir, vttData)
@@ -134,12 +164,22 @@ function createClient (userId) {
     errorMessage = err.message
   })
 
+  client.on('torrent', function () {
+    const userClient = connectedUserClients.get(String(userId))
+
+    userClient.status = 'completed'
+    console.log('Torrent added')
+  })
+
   client.on('download', function (bytes) {
     stats = {
       progress: Math.round(client.progress * 100 * 100) / 100,
       downloadSpeed: client.downloadSpeed,
       ratio: client.ratio
     }
+
+    const userClient = connectedUserClients.get(String(userId))
+    userClient.stats = stats
     console.log(stats)
   })
 
@@ -150,6 +190,22 @@ function createClient (userId) {
     errorMessage
   }
 }
+
+router.get('/stream/:magnet/pause', function (req, res) {
+  const { magnet } = req.params
+  const { client } = req.client
+  let torrent = client.get(magnet)
+
+  if (!torrent) return res.sendStatus(404)
+
+  try {
+    torrent.pause()
+  } catch (err) {
+    return res.sendStatus(500)
+  }
+
+  res.sendStatus(200)
+})
 
 router.get('/stream', function (req, res) {
   const {
@@ -175,7 +231,7 @@ router.get('/stream', function (req, res) {
     let err = new Error('Wrong range')
     err.status = 416
 
-    res.status(416).json(err)
+    return res.status(416).json(err)
   }
 
   let positions = range.replace(/bytes=/, '').split('-')
@@ -213,9 +269,19 @@ router.post('/add/:magnet', function (req, res) {
   } = req.client
 
   const torrent = client.get(magnet)
-  if (torrent) return res.json(magnet)
+  if (torrent) {
+    torrent.resume()
+    processTorrent(torrent)
+    return
+  }
 
-  client.add(magnet, function (torrent) {
+  client.status = 'downloading'
+
+  client.add(magnet, function (addedTorrent) {
+    processTorrent(addedTorrent)
+  })
+
+  function processTorrent (torrent) {
     let file = torrent.files[0]
 
     for (let i = 1; i < torrent.files.length; i++) {
@@ -228,7 +294,7 @@ router.post('/add/:magnet', function (req, res) {
       magnet,
       fileName: file.name
     })
-  })
+  }
 })
 
 router.get('/torrents', async function (req, res) {
@@ -242,9 +308,9 @@ router.get('/torrents', async function (req, res) {
 
   const torrents = torrentSearch.search(term, 'Movies')
   const subtitles = OpenSubtitles.search({
-    extensions: ['srt', 'vtt'], // Accepted extensions, defaults to 'srt'.
-    imdbid: 'tt5463162', // 'tt528809' is fine too.
-    query: term // Text-based query, this is not recommended.
+    extensions: ['srt', 'vtt'],
+    query: term,
+    limit: 'all'
   })
 
   const result = await Promise.all([torrents, subtitles])
@@ -304,10 +370,14 @@ router.get('/list', function (req, res, next) {
 
 router.get('/stats', function (req, res, next) {
   const {
-    stats
+    stats,
+    status
   } = req.client
   res.status(200)
-  res.json(stats)
+  res.json({
+    stats,
+    status
+  })
 })
 
 router.get('/errors', function (req, res, next) {

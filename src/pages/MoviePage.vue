@@ -1,5 +1,9 @@
 <template>
   <AppPage>
+    <MovieLoader
+      :loading="loading"
+      :stats="stats"
+    />
     <div class="wrapper">
       <div v-if="specificMovie" class='movie-container'>
         <img :src='specificMovie.poster' alt=''>
@@ -21,7 +25,7 @@
               </a>
             </div>
           </div>
-          <MovieSettingsBar />
+          <MovieSettingsBar @add-torrent="checkProgress" />
         </div>
         <LikeButton
           class="like-button"
@@ -45,12 +49,18 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
+import MovieLoader from '@/components/MovieLoader'
 import LikeButton from '@/components/LikeButton'
 import BigHeartButton from '@/components/BigHeartButton'
 import MovieGallery from '@/components/MovieGallery'
 import MovieSettingsBar from '@/components/MovieSettingsBar'
-import { getMovie, addToFavorites,
-  removeFromFavorites, getRecommended } from '@/actions/creators'
+import {
+  getMovie,
+  addToFavorites,
+  removeFromFavorites,
+  getRecommended,
+  getClientStats
+} from '@/actions/creators'
 export default {
   name: 'MoviePage',
   props: {
@@ -59,24 +69,54 @@ export default {
     }
   },
   components: {
+    MovieLoader,
     LikeButton,
     BigHeartButton,
     MovieGallery,
     MovieSettingsBar
   },
-  data: function () {
+  data () {
     return {
       trailer: null,
-      error: null
+      error: null,
+      loading: false,
+      stats: {}
     }
   },
   mounted () {
     this.getData()
   },
   methods: {
+    // demoLoader () {
+    //   const timer = setInterval(() => {
+    //     this.progress.progress += 3
+    //     if (this.progress.progress >= 99) {
+    //       clearInterval(timer)
+    //     }
+    //   }, 1000)
+    // },
     getData () {
       this.$store.dispatch(getMovie(this.id))
       this.$store.dispatch(getRecommended(this.id))
+    },
+    checkProgress () {
+      this.loading = true
+      const progressTimer = setTimeout(() => {
+        console.log('Dispatching stats actions to see what\'s going on')
+        this.$store.dispatch(getClientStats()).then(({ stats, status }) => {
+          if (status === 'completed') {
+            this.stats.progress = 100
+            const finish = setTimeout(() => {
+              this.loading = false
+              clearTimeout(finish)
+              clearTimeout(progressTimer)
+            }, 2000)
+          } else {
+            this.stats = stats
+            this.checkProgress()
+          }
+        })
+      }, 1000)
     },
     addToFavorites () {
       const exists = this.isMovieInFavorites(this.id)
@@ -93,20 +133,17 @@ export default {
     }
   },
   computed: {
-    ...mapState('movie', [
-      'specificMovie',
-      'recommendedMovies'
-    ]),
-    ...mapGetters('user', [
-      'isMovieInFavorites'
-    ]),
+    ...mapState('movie', ['specificMovie', 'recommendedMovies']),
+    ...mapGetters('user', ['isMovieInFavorites']),
     isFavorite () {
       return this.isMovieInFavorites(this.specificMovie.id)
     },
     genres () {
-      const output = this.specificMovie.genres.map(genre => {
-        return genre.name
-      }).join(', ')
+      const output = this.specificMovie.genres
+        .map(genre => {
+          return genre.name
+        })
+        .join(', ')
 
       return output
     },
@@ -156,7 +193,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  transform: scale(1.2,1.4);
+  transform: scale(1.2, 1.4);
   user-select: none;
   pointer-events: none;
 }
@@ -243,7 +280,7 @@ export default {
 
 .movie-container > .movie-overview > .rating > .rating-wrapper > i {
   position: absolute;
-  color: #F9C504;
+  color: #f9c504;
   font-size: 45px;
   left: 0;
   right: 0;

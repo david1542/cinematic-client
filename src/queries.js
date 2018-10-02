@@ -60,3 +60,11 @@ export const searchSubtitles = (options) => {
   const query = Object.keys(options).map(key => `${key}=${options[key]}`).join('&')
   return SERVER_URL + '/videos/subtitles?' + query
 }
+
+export const pauseTorrent = (magnet) => {
+  return SERVER_URL + '/videos/stream/' + magnet + '/pause'
+}
+
+export const getStats = () => {
+  return SERVER_URL + '/videos/stats'
+}
