@@ -51,6 +51,7 @@ const mutations = {
 
 const getters = {
   isAuthenticated: state => !!state.token,
+  getUsername: state => state.user.firstName,
   isMovieInFavorites: state => id => state.user.favorites.some(movieId => String(movieId) === String(id))
 }
 

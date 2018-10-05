@@ -129,9 +129,9 @@ router.get('/subtitles', async function (req, res, next) {
       // Sending files to the user
       subtitlesStream.pipe(res)
 
-      // subtitlesStream.on('end', () => {
-      //   fs.unlinkSync(appDir + '/tmp' + file.name)
-      // })
+      subtitlesStream.on('finish', () => {
+        fs.unlinkSync(outputDir)
+      })
     })
   })
 })
@@ -180,8 +180,6 @@ function createClient (userId) {
 
     const userClient = connectedUserClients.get(String(userId))
     userClient.stats = stats
-
-    console.log(stats)
   })
 
   return {
@@ -195,17 +193,16 @@ function createClient (userId) {
 router.get('/stream/:magnet/pause', function (req, res) {
   const { magnet } = req.params
   const { client } = req.client
-  let torrent = client.get(magnet)
-
-  if (!torrent) return res.sendStatus(404)
 
   try {
-    torrent.pause()
-  } catch (err) {
-    return res.sendStatus(500)
-  }
+    client.remove(magnet, function (err) {
+      if (err) throw new Error(err)
 
-  res.sendStatus(200)
+      res.sendStatus(200)
+    })
+  } catch (err) {
+    res.sendStatus(500)
+  }
 })
 
 router.get('/stream', function (req, res) {
@@ -259,11 +256,13 @@ router.get('/stream', function (req, res) {
 
   stream.pipe(res)
   stream.on('error', function (err) {
+    console.log(err)
     return res.status(500).json(err)
   })
 })
 
 router.post('/add/:magnet', function (req, res) {
+  console.log('Adding torrent...')
   let magnet = req.params.magnet
   const {
     client
@@ -277,6 +276,9 @@ router.post('/add/:magnet', function (req, res) {
   }
 
   client.add(magnet, function (addedTorrent) {
+    if (addedTorrent.downloaded === addedTorrent.length) {
+      req.client.status = 'completed'
+    }
     processTorrent(addedTorrent)
   })
 
@@ -299,6 +301,8 @@ router.post('/add/:magnet', function (req, res) {
 router.get('/torrents', async function (req, res) {
   if (!req.query.term) return res.sendStatus(400)
   const term = req.query.term
+
+  console.log('Searching torrents and subtitles for term: ' + term)
 
   torrentSearch.enablePublicProviders()
   torrentSearch.enableProvider('ThePirateBay')
@@ -352,21 +356,6 @@ router.get('/torrents', async function (req, res) {
   })
 })
 
-router.get('/list', function (req, res, next) {
-  const {
-    client
-  } = req.client
-  let torrent = client.torrents.reduce(function (array, data) {
-    array.push({
-      hash: data.infoHash
-    })
-    return array
-  }, [])
-
-  res.status(200)
-  res.json(torrent)
-})
-
 router.get('/stats', function (req, res, next) {
   const {
     stats,
@@ -376,26 +365,6 @@ router.get('/stats', function (req, res, next) {
   res.json({
     stats,
     status
-  })
-})
-
-router.get('/errors', function (req, res, next) {
-  const {
-    errorMessage
-  } = req.client
-  res.status(200)
-  res.json(errorMessage)
-})
-
-router.delete('/delete/:magnet', function (req, res, next) {
-  let magnet = req.params.magnet
-  const {
-    client
-  } = req.client
-
-  client.remove(magnet, function () {
-    res.status(200)
-    res.end()
   })
 })
 

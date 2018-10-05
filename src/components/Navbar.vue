@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isAuthenticated">
     <v-navigation-drawer
       :mini-variant.sync="miniVariant"
       :clipped="clipped"
@@ -9,6 +9,20 @@
       app
       dark
     >
+      <v-list class="pa-1 border-light">
+        <v-list-tile avatar>
+          <v-list-tile-avatar>
+            <v-icon>
+              fas fa-user
+            </v-icon>
+            <!-- <img src="https://randomuser.me/api/portraits/men/85.jpg"> -->
+          </v-list-tile-avatar>
+
+          <v-list-tile-content>
+            <v-list-tile-title>{{ getUsername }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
       <v-list>
         <v-list-tile
           router
@@ -28,6 +42,9 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
+      <div class="drawer-footer">
+        Cinematic v1.0
+      </div>
     </v-navigation-drawer>
     <v-toolbar app dark>
       <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
@@ -126,17 +143,9 @@ export default {
     }
   },
   computed: {
-    getUsername () {
-      const { user } = this.$store.state.user
-
-      if (user) {
-        return user.firstName
-      }
-
-      return false
-    },
     ...mapGetters('user', [
-      'isAuthenticated'
+      'isAuthenticated',
+      'getUsername'
     ])
   }
 }
@@ -292,5 +301,19 @@ export default {
   font-size: 16px;
   width: 100%;
   height: 100%;
+}
+.border-light {
+  border-bottom: 1px solid white;
+}
+.drawer-footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  text-align: center;
+  font-weight: bold;
+  font-size: 15px;
+  user-select: none;
+  padding: 24px;
 }
 </style>

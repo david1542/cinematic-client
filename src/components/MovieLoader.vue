@@ -46,10 +46,10 @@ export default {
   },
   methods: {
     progress_step (event, progress, stepValue) {
-      console.log(stepValue)
+      // console.log(stepValue)
     },
     progress_end (event) {
-      console.log('Circle progress end')
+      // console.log('Circle progress end')
     }
   },
   computed: {

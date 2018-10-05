@@ -94,7 +94,7 @@ export default {
       loading: false,
       readyToWatch: false,
       startStream: false,
-      percentThreshold: 5,
+      percentThreshold: 3,
       progress: 0
     }
   },
@@ -102,14 +102,6 @@ export default {
     this.getData()
   },
   methods: {
-    // demoLoader () {
-    //   const timer = setInterval(() => {
-    //     this.progress.progress += 3
-    //     if (this.progress.progress >= 99) {
-    //       clearInterval(timer)
-    //     }
-    //   }, 1000)
-    // },
     getData () {
       this.$store.dispatch(getMovie(this.id))
       this.$store.dispatch(getRecommended(this.id))
@@ -120,7 +112,7 @@ export default {
         console.log('Dispatching stats actions to see what\'s going on')
         this.$store.dispatch(getClientStats()).then(({ stats, status }) => {
           this.progress = stats.progress * 100 / this.percentThreshold
-          if (this.progress >= 100) {
+          if (this.progress >= 100 || status === 'completed') {
             this.loading = false
             this.readyToWatch = true
           } else {

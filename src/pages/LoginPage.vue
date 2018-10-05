@@ -9,7 +9,7 @@
         <label for="email">Email</label>
         <input
           id="email"
-          class="form-control"
+          class="input-field"
           type="text"
           v-model="email"
         />
@@ -18,22 +18,27 @@
         <label for="password">Password</label>
         <input
           id="password"
-          class="form-control"
+          class="input-field"
           type="password"
           v-model="password" />
       </div>
       <button
         type="button"
-        class="btn btn-lg btn-success"
-        :click="login"
+        class="button"
+        @click="login"
       >
         <span v-if="loading">
           Logging in
           <i class="fas fa-circle-notch fa-spin"></i>
         </span>
-        <span v-else>Log In</span>
+        <span v-else>
+          Log in
+        </span>
       </button>
     </form>
+    <router-link class="button" :to="{name: 'RegisterPage'}">
+      Create an account
+    </router-link>
   </AppPage>
 </template>
 
@@ -86,15 +91,55 @@ h2 {
 }
 
 .login-form > button {
-  margin-top: 15px;
+  margin: 15px auto;
 }
 
 .login-form > button > span > i{
   margin-left: 5px;
 }
 
+.login-form > .form-group .input-field {
+  width: 100%;
+	display: inline-block;
+	color: #f4f2ca;
+	text-align: left;
+	background-color: #383A3B;
+	padding: .9em 1.8em;
+	border: none;
+	outline: none;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+  caret-color: #f4f2ca;
+}
+.login-form > .form-group .input-field:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px #383A3B inset;
+  -webkit-text-fill-color: #f4f2ca !important;
+}
 .login-form > .form-group > label {
   text-align: left;
   display: block;
+  font-weight: bold;
+}
+
+.button {
+  display: inline-block;
+  width: 60%;
+  height: 40px;
+  line-height: 40px;
+  position: relative;
+  overflow: hidden;
+  font-weight: bold;
+  color: white;
+  background-color: #48B0E3;
+  border: 2px solid #48B0E3;
+  transition: color .5s;
+  border-radius: 20px;
+  outline: none;
+  text-decoration: none;
+}
+
+.button:hover {
+  color: #fff;
 }
 </style>

@@ -2,7 +2,10 @@
   <div class="list-container">
     <div
       class="movie-list"
-      :style="{transform: 'translateX(' + getLeft + 'px)'}"
+      :style="{
+        transform: 'translateX(' + getLeft + 'px)',
+        marginLeft
+      }"
       ref="movieList"
     >
       <MovieGalleryItem
@@ -44,12 +47,13 @@ export default {
   components: {
     MovieGalleryItem
   },
-  data: function () {
+  data () {
     return {
       middleItem: this.movies.length / 2,
       hoveredItem: null,
       actionMessage: '',
-      addedMovieId: null
+      addedMovieId: null,
+      marginLeft: ''
     }
   },
   methods: {
@@ -94,6 +98,13 @@ export default {
           this.actionMessage = err.message
         })
       }
+    },
+    handleResize () {
+      this.evaluateMargin()
+    },
+    evaluateMargin () {
+      const screenWidth = window.innerWidth
+      this.marginLeft = (screenWidth / 2 - 120) + 'px'
     }
     // evaluateArray (direction) {
     //   const children = this.$refs.movieList.childNodes
@@ -124,8 +135,15 @@ export default {
     //   }
     // }
   },
+  mounted () {
+    this.evaluateMargin()
+    window.addEventListener('resize', this.handleResize)
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.handleResize)
+  },
   computed: {
-    getLeft: function () {
+    getLeft () {
       return this.middleItem * -144
     },
     ...mapGetters('user', [
@@ -153,7 +171,7 @@ export default {
   display: flex;
   position: absolute;
   transition: 0.3s;
-  margin-left: 41.5%;
+  /* margin-left: 41.5%; */
   transform-origin: center;
   z-index: 2;
 }

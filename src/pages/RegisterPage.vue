@@ -1,35 +1,34 @@
 <template>
   <AppPage>
-    <h2>Sign up today for free!</h2>
+    <h2>Fill in all the details</h2>
     <form class="register-form">
       <div class="form-group">
         <label for="firstName">First Name</label>
-        <input id="firstName" class="form-control" type="text" v-model="firstName" />
+        <input id="firstName" class="input-field" type="text" v-model="firstName" />
       </div>
       <div class="form-group">
         <label for="lastName">Last Name</label>
-        <input id="lastName" class="form-control" type="text" v-model="lastName" />
+        <input id="lastName" class="input-field" type="text" v-model="lastName" />
       </div>
       <div class="form-group">
         <label for="email">Email</label>
-        <input id="email" class="form-control" type="text" v-model="email" />
+        <input id="email" class="input-field" type="text" v-model="email" />
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input id="password" class="form-control" type="text" v-model="password" />
+        <input id="password" class="input-field" type="password" v-model="password" />
       </div>
-      <button type="button" class="btn btn-lg btn-success" v-on:click="register">
+      <button type="button" class="button" v-on:click="register">
         <span v-if="loading">
           Registering
           <i class="fas fa-circle-notch fa-spin"></i>
         </span>
         <span v-else>Sign Up!</span>
       </button>
+      <router-link class="button link" :to="{name: 'LoginPage'}">
+        Log in
+      </router-link>
     </form>
-    <!-- <div class="login-reference">
-      <h2>Registered user? Sign in here</h2>
-      <router-link to="/login" class="btn btn-primary">Sign In</router-link>
-    </div> -->
   </AppPage>
 </template>
 
@@ -95,6 +94,48 @@ h2 {
 .register-form > .form-group > label {
   text-align: left;
   display: block;
+  font-weight: bold;
+}
+
+.register-form > .form-group .input-field {
+  width: 100%;
+	display: inline-block;
+	color: #f4f2ca;
+	text-align: left;
+	background-color: #383A3B;
+	padding: .9em 1.8em;
+	border: none;
+	outline: none;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+  caret-color: #f4f2ca;
+}
+.register-form > .form-group .input-field:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px #383A3B inset;
+  -webkit-text-fill-color: #f4f2ca !important;
+}
+
+.button {
+  display: inline-block;
+  width: 60%;
+  height: 40px;
+  line-height: 40px;
+  position: relative;
+  overflow: hidden;
+  font-weight: bold;
+  color: white;
+  background-color: #48B0E3;
+  border: 2px solid #48B0E3;
+  transition: color .5s;
+  border-radius: 20px;
+  margin: auto;
+  outline: none;
+  text-decoration: none;
+}
+
+.button:hover {
+  color: #fff;
 }
 
 .login-reference {
@@ -102,5 +143,8 @@ h2 {
 }
 .login-reference > h2 {
   font-size: 23px;
+}
+.link {
+  margin-top: 15px;
 }
 </style>

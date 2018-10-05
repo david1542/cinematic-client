@@ -1,6 +1,6 @@
 <template>
   <footer>
-    <h3>Developed By Dudu L. &copy; 2018</h3>
+    <h3>Cinematic &copy; 2018</h3>
   </footer>
 </template>
 
