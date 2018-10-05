@@ -9,7 +9,10 @@
         :langs="availableLangs"
         @change="languageChanged"
       />
-      <button class="btn btn-success" @click="watchMovie">
+      <button
+        class="button"
+        @click="watchMovie"
+      >
         Watch Movie
       </button>
     </div>
@@ -101,5 +104,22 @@ button.btn-primary .fa-spinner {
 .message > .fas {
   font-size: 20px;
   margin-right: 4px;
+}
+.button {
+  display: inline-block;
+  width: 20%;
+  height: 35px;
+  line-height: 32px;
+  position: relative;
+  overflow: hidden;
+  font-weight: bold;
+  color: white;
+  background-color: #48B0E3;
+  border: 2px solid #48B0E3;
+  -webkit-transition: color .5s;
+  transition: color .5s;
+  border-radius: 20px;
+  outline: none;
+  text-decoration: none;
 }
 </style>
