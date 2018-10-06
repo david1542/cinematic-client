@@ -151,7 +151,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .navbar {
   position: fixed;
   width: 100%;
@@ -291,6 +291,10 @@ export default {
 
 .v-toolbar__items > a {
   padding: 16px;
+}
+
+.v-toolbar {
+  box-shadow: none !important;
 }
 
 .v-toolbar__items > a,

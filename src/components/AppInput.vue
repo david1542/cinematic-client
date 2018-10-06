@@ -12,7 +12,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .input-field {
   width: 80px;
 	display: inline-block;

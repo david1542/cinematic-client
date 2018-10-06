@@ -65,7 +65,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .loader-container {
   position: fixed;
   display: flex;

@@ -23,7 +23,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .hud-container {
   position: absolute;
   bottom: 18%;

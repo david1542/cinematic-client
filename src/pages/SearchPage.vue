@@ -43,7 +43,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .header {
   padding: 12px 40px;
   display: flex;
