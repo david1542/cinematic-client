@@ -124,7 +124,7 @@ h2 {
 
 .button {
   display: inline-block;
-  width: 20%;
+  width: 60%;
   height: 40px;
   line-height: 40px;
   position: relative;

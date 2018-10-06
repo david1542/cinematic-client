@@ -307,6 +307,7 @@ export default {
 }
 .drawer-footer {
   position: absolute;
+  color: white;
   bottom: 0;
   right: 0;
   left: 0;

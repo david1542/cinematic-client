@@ -10,10 +10,22 @@ const OS = require('opensubtitles-api')
 const path = require('path')
 const srt2vtt = require('srt2vtt')
 const streamifier = require('streamifier')
+const rimraf = require('rimraf')
+const Sniffr = require('sniffr')
 const auth = require('../middlewares/auth')
 const config = require('../config')
 const utils = require('../utils')
 const OpenSubtitles = new OS(config.OPENSUBTITLES_SETTINGS)
+
+router.use(function (req, res, next) {
+  const userAgent = req.headers['user-agent']
+  const s = new Sniffr()
+
+  s.sniff(userAgent)
+  req.os = s.os
+
+  next()
+})
 
 function tryConnect () {
   try {
@@ -129,8 +141,9 @@ router.get('/subtitles', async function (req, res, next) {
       // Sending files to the user
       subtitlesStream.pipe(res)
 
-      subtitlesStream.on('finish', () => {
+      res.on('finish', () => {
         fs.unlinkSync(outputDir)
+        fs.unlinkSync(remoteDir)
       })
     })
   })
@@ -198,7 +211,12 @@ router.get('/stream/:magnet/pause', function (req, res) {
     client.remove(magnet, function (err) {
       if (err) throw new Error(err)
 
-      res.sendStatus(200)
+      const torrentPath = req.os.name === 'windows' ? 'C:/cinematic/movies' : '/cinematic/movies'
+      rimraf(torrentPath, function () {
+        console.log('Removed torrents data')
+
+        res.sendStatus(200)
+      })
     })
   } catch (err) {
     res.sendStatus(500)
@@ -275,7 +293,10 @@ router.post('/add/:magnet', function (req, res) {
     return
   }
 
-  client.add(magnet, function (addedTorrent) {
+  const torrentPath = req.os.name === 'windows' ? 'C:/cinematic/movies' : '/cinematic/movies'
+  client.add(magnet, {
+    path: torrentPath
+  }, function (addedTorrent) {
     if (addedTorrent.downloaded === addedTorrent.length) {
       req.client.status = 'completed'
     }
