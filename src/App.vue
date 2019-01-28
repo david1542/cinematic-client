@@ -18,13 +18,13 @@ export default {
   components: {
     Navbar
   },
-  created: function () {
-    axios.interceptors.response.use(undefined, function (err) {
+  created () {
+    axios.interceptors.response.use(undefined, (err) => {
       return new Promise((resolve, reject) => {
         if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
-        // if you ever get an unauthorized, logout the user
+          // if you ever get an unauthorized, logout the user
           this.$store.dispatch(logoutUser())
-        // you can also redirect to /login if needed !
+          // you can also redirect to /login if needed !
         }
         throw err
       })
@@ -34,14 +34,15 @@ export default {
 </script>
 
 <style>
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
   margin: 0;
 }
 
 #app {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -62,7 +63,7 @@ html, body {
 .v-content {
   padding-top: 0 !important;
 }
-.v-navigation-drawer>.v-list .v-list__tile--active .v-list__tile__title {
+.v-navigation-drawer > .v-list .v-list__tile--active .v-list__tile__title {
   color: white !important;
 }
 
@@ -76,11 +77,11 @@ html, body {
 }
 
 .v-overlay:before {
-  background-color: rgb(0,0,0);
+  background-color: rgb(0, 0, 0);
 }
 
 .v-overlay--active:before {
-    opacity: .7;
+  opacity: 0.7;
 }
 
 .v-toolbar__side-icon {

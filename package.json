@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "node build/build.js",
+    "heroku-postbuild": "npm run build",
     "lint": "eslint --ext .js,.vue src",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "node server.js",

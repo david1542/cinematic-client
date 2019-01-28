@@ -46,7 +46,10 @@
       </div>
       <div class="recommended">
         <h2><strong>You may also like...</strong></h2>
-        <MovieGallery :movies="recommendedMovies" />
+        <MovieGallery
+          v-if="recommendedMovies"
+          :movies="recommendedMovies"
+        />
       </div>
       <div v-if="specificMovie" class='trailer'>
         <iframe frameborder='0' height='100%' width='100%' :src="specificMovie.trailer">
