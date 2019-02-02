@@ -56,7 +56,7 @@ export default {
           this.$store.dispatch(logoutUser())
           // you can also redirect to /login if needed !
         }
-        throw err
+        reject(err)
       })
     })
   }
@@ -80,6 +80,7 @@ body {
   height: 100%;
   width: 100%;
   margin: 0;
+  padding: 0 !important;
 }
 
 #app {

@@ -27,11 +27,11 @@
         class="button"
         @click="login"
       >
-        <span v-if="loading">
+        <span v-show="loading">
           Logging in
           <i class="fas fa-circle-notch fa-spin"></i>
         </span>
-        <span v-else>
+        <span v-show="!loading">
           Log in
         </span>
       </button>
@@ -73,8 +73,16 @@ export default {
 
       this.$store.dispatch(loginUser(userDetails)).then(() => {
         this.$router.push({name: 'HomePage'})
-      }).catch(err => {
-        this.error = err
+      }).catch(res => {
+        const { error } = res.response.data
+
+        this.loading = false
+        // this.error = error
+        this.$swal({
+          type: 'error',
+          text: error
+          // footer: '<a href>Why do I have this issue?</a>'
+        })
       })
     }
   }
