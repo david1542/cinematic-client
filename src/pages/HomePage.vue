@@ -1,17 +1,20 @@
 <template>
-  <AppPage>
-    <h2 class="popular-movies">Popular</h2>
-    <MovieGallery v-if="popularMovies" :movies="popularMovies" class="margin-bottom-200" />
-    <h2 class="popular-movies">Must See Movies</h2>
-    <MovieGallery v-if="topRatedMovies" :movies="topRatedMovies" class="margin-bottom-200" />
-    <CategoryList :categories="categories" />
+  <AppPage waitForUser>
+    <template v-if="asyncDataStatus_ready">
+      <h2 class="popular-movies">Popular</h2>
+      <MovieGallery :movies="popularMovies" class="margin-bottom-200" />
+      <h2 class="popular-movies">Must See Movies</h2>
+      <MovieGallery :movies="topRatedMovies" class="margin-bottom-200" />
+      <CategoryList :categories="categories" />
+    </template>
     <!-- <h2 class="page-title">Movie Search Engine</h2> -->
     <!-- <SearchBar :search-movie="sendQuery" /> -->
   </AppPage>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 import SearchBar from '@/components/SearchBar'
 import MovieGallery from '@/components/MovieGallery'
 import CategoryList from '@/components/CategoryList'
@@ -25,10 +28,17 @@ export default {
     MovieGallery,
     CategoryList
   },
+  mixins: [
+    asyncDataStatus
+  ],
   mounted () {
-    this.$store.dispatch(getPopularMovies())
-    this.$store.dispatch(getTopRated())
-    this.$store.dispatch(getMoviesCategories())
+    Promise.all([
+      this.$store.dispatch(getPopularMovies()),
+      this.$store.dispatch(getTopRated()),
+      this.$store.dispatch(getMoviesCategories())
+    ]).then(() => {
+      this.asyncDataStatus_fetched()
+    })
   },
   methods: {
     sendQuery: function (query) {
@@ -38,11 +48,16 @@ export default {
       this.$router.push('register')
     }
   },
-  computed: mapState('movie', [
-    'popularMovies',
-    'topRatedMovies',
-    'categories'
-  ])
+  computed: {
+    ...mapState('movie', [
+      'popularMovies',
+      'topRatedMovies',
+      'categories'
+    ]),
+    ...mapGetters('user', [
+      'isAuthenticated'
+    ])
+  }
 }
 </script>
 

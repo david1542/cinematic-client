@@ -34,6 +34,8 @@
 
 <script>
 import { registerUser } from '../actions/creators'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
+
 export default {
   name: 'RegisterPage',
   data () {
@@ -45,6 +47,12 @@ export default {
       loading: false,
       error: null
     }
+  },
+  mixins: [
+    asyncDataStatus
+  ],
+  mounted () {
+    this.asyncDataStatus_fetched()
   },
   methods: {
     register () {

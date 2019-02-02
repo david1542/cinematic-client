@@ -7,12 +7,12 @@ import FavoritesPage from '@/pages/FavoritesPage'
 import RegisterPage from '@/pages/RegisterPage'
 import LoginPage from '@/pages/LoginPage'
 import NotFoundPage from '@/pages/NotFoundPage'
-import store from '../store'
+// import store from '../store'
 
 Vue.use(Router)
 
 const ifAuthenticated = (to, from, next) => {
-  if (store.getters['user/isAuthenticated']) {
+  if (localStorage.getItem('user-token')) {
     next()
     return
   }
@@ -20,7 +20,7 @@ const ifAuthenticated = (to, from, next) => {
 }
 
 const ifNotAuthenticated = (to, from, next) => {
-  if (!store.getters['user/isAuthenticated']) {
+  if (!localStorage.getItem('user-token')) {
     next()
     return
   }

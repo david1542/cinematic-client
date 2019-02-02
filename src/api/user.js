@@ -4,6 +4,21 @@ import {
 } from '../config'
 
 export default {
+  getMyUser (success, failure) {
+    const token = localStorage.getItem('user-token')
+
+    axios({
+      method: 'GET',
+      url: SERVER_URL + '/users/me',
+      headers: {
+        token
+      }
+    }).then(res => {
+      success(res.data)
+    }).catch(err => {
+      failure(err)
+    })
+  },
   addToFavorites (id, success, failure) {
     const token = localStorage.getItem('user-token')
     axios({

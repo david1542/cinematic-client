@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <main>
-      <slot></slot>
+      <slot v-if="show"></slot>
     </main>
     <Footer />
   </div>
@@ -9,10 +9,31 @@
 
 <script>
 import Footer from './Footer'
+import { mapState } from 'vuex'
+
 export default {
   name: 'AppPage',
+  props: {
+    waitForUser: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  },
   components: {
     Footer
+  },
+  computed: {
+    ...mapState('user', [
+      'user'
+    ]),
+    show () {
+      if (this.waitForUser) {
+        return !!this.user
+      }
+
+      return true
+    }
   }
 }
 </script>

@@ -29,8 +29,16 @@
 </template>
 
 <script>
+import asyncDataStatus from '@/mixins/asyncDataStatus'
+
 export default {
-  name: 'NotFoundPage'
+  name: 'NotFoundPage',
+  mixins: [
+    asyncDataStatus
+  ],
+  mounted () {
+    this.asyncDataStatus_fetched()
+  }
 }
 </script>
 

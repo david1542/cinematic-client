@@ -55,7 +55,9 @@ export default {
     }
   },
   beforeDestroy () {
-    this.$store.dispatch(pauseTorrent(this.selectedHash))
+    if (this.selectedHash) {
+      this.$store.dispatch(pauseTorrent(this.selectedHash))
+    }
   },
   methods: {
     loadSubtitles ({ file }) {

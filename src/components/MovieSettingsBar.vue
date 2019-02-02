@@ -80,7 +80,7 @@ export default {
 .settings-items {
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-end;
   padding-left: 40px;
   position: absolute;
   bottom: 0;

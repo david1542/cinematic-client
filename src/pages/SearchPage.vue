@@ -11,8 +11,9 @@
 </template>
 
 <script>
-import { searchMovies } from '../actions/creators'
 import { mapState } from 'vuex'
+import { searchMovies } from '../actions/creators'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 import MovieListItem from '@/components/MovieListItem'
 export default {
   name: 'SearchPage',
@@ -24,9 +25,15 @@ export default {
   components: {
     MovieListItem
   },
+  mixins: [
+    asyncDataStatus
+  ],
   methods: {
     search () {
       this.$store.dispatch(searchMovies(this.query))
+        .then(() => {
+          this.asyncDataStatus_fetched()
+        })
     }
   },
   mounted () {

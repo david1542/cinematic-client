@@ -6,6 +6,7 @@ import Vuetify from 'vuetify'
 import App from './App'
 import router from './router'
 import store from './store'
+import sockets from './sockets'
 import AppPage from './components/AppPage'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -16,6 +17,9 @@ import 'vuetify/dist/vuetify.min.css'
 import './plugins/vuetify'
 
 Vue.config.productionTip = false
+
+// Initializing Socket IO Connection
+sockets()
 
 // Base Components
 Vue.component('AppPage', AppPage)

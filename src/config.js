@@ -5,3 +5,11 @@ export const YOUTUBE = 'https://www.youtube.com/embed/'
 export const SERVER_URL = process.env.SERVER_URL
 // export const SERVER_URL = 'http://localhost:4000'
 // export const SERVER_URL = 'https://cinematic-server.herokuapp.com'
+
+export default {
+  OMDB_ROOT,
+  API_KEY,
+  MOVIE_IMG_ROOT,
+  YOUTUBE,
+  SERVER_URL
+}

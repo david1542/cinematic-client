@@ -1,5 +1,6 @@
 <template>
   <div class="select-container">
+    <span class="label">Pick Torrent:</span>
     <select
       class="select-input"
       @change="change"
@@ -42,6 +43,12 @@ export default {
   width: 300px;
   margin-right: 10px;
 }
+.label {
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+  float: left;
+}
 select.select-input {
   background-color: #808B90;
   width: 100%;
@@ -61,8 +68,8 @@ select.select-input:focus + .select-container > .caret > i  {
 }
 .select-container > .caret {
   position: absolute;
+  top: 17px;
   right: 7px;
-  top: 0;
   bottom: 0;
   display: flex;
   align-items: center;

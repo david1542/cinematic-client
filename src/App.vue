@@ -3,7 +3,8 @@
     <Navbar />
     <v-content>
       <v-container fluid class="p-0 h-100">
-        <router-view></router-view>
+        <router-view @ready="pageReady">
+        </router-view>
       </v-container>
     </v-content>
   </v-app>
@@ -11,14 +12,43 @@
 
 <script>
 import axios from 'axios'
+import NProgress from 'nprogress'
 import Navbar from './components/Navbar'
-import { logoutUser } from './actions/creators'
+import { logoutUser, fetchUser } from './actions/creators'
 export default {
   name: 'App',
   components: {
     Navbar
   },
+  methods: {
+    pageReady () {
+      this.showPage = true
+      NProgress.done()
+    },
+    initProgressBar () {
+      NProgress.configure({
+        minimum: 0.1,
+        speed: 500,
+        trickleSpeed: 100,
+        showSpinner: false
+      })
+      NProgress.start()
+
+      this.$router.beforeEach((to, from, next) => {
+        this.showPage = false
+        NProgress.start()
+        next()
+      })
+    }
+  },
   created () {
+    // Initializing Progress Bar
+    this.initProgressBar()
+
+    this.$store.dispatch(fetchUser())
+      .catch(() => {
+        this.$store.dispatch(logoutUser())
+      })
     axios.interceptors.response.use(undefined, (err) => {
       return new Promise((resolve, reject) => {
         if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
@@ -34,6 +64,17 @@ export default {
 </script>
 
 <style>
+@import "nprogress/nprogress.css";
+
+#nprogress .bar {
+  background: #F32222;
+  height: 4px;
+}
+
+#nprogress .peg {
+  display: none;
+}
+
 html,
 body {
   height: 100%;

@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import movie from '@/api/movie'
 import { FETCH_POPULAR_MOVIES, FETCH_POPULAR_MOVIES_SUCCESS,
   FETCH_POPULAR_MOVIES_FAILURE, FETCH_SPECIFIC_MOVIE,
@@ -12,7 +13,8 @@ import { FETCH_POPULAR_MOVIES, FETCH_POPULAR_MOVIES_SUCCESS,
   GET_TOP_RATED_MOVIES, GET_TOP_RATED_MOVIES_SUCCESS,
   GET_TOP_RATED_MOVIES_FAILURE, SET_AVAILABLE_LANGS,
   CHANGE_SETTINGS, FETCH_SUBTITLES, FETCH_SUBTITLES_SUCCESS,
-  FETCH_SUBTITLES_FAILURE, PAUSE_TORRENT, GET_CLIENT_STATS } from '../../actions'
+  FETCH_SUBTITLES_FAILURE, PAUSE_TORRENT, GET_CLIENT_STATS,
+  SET_MOVIE_DATA } from '../../actions'
 
 const state = {
   popularMovies: null,
@@ -24,71 +26,71 @@ const state = {
 
 const mutations = {
   [FETCH_POPULAR_MOVIES_SUCCESS] (state, { movies }) {
-    state.popularMovies = movies
+    Vue.set(state, 'popularMovies', movies)
   },
   [FETCH_POPULAR_MOVIES_FAILURE] (state, { error }) {
-    state.popularMoviesError = error
+    Vue.set(state, 'popularMoviesError', error)
   },
   [FETCH_SPECIFIC_MOVIE_SUCCESS] (state, { movie }) {
-    state.specificMovie = movie
+    Vue.set(state, 'specificMovie', movie)
   },
   [FETCH_SPECIFIC_MOVIE_FAILURE] (state, { error }) {
-    state.specificMovieError = error
+    Vue.set(state, 'specificMovieError', error)
   },
   [RESET_SPECIFIC_MOVIE] (state) {
-    state.specificMovie = null
+    Vue.set(state, 'specificMovie', null)
   },
   [SEARCH_TERM_SUCCESS] (state, { movies }) {
-    state.searchMovies = movies
+    Vue.set(state, 'searchMovies', movies)
   },
   [SEARCH_TERM_FAILURE] (state, { error }) {
-    state.searchTermError = error
+    Vue.set(state, 'searchTermError', error)
   },
   [RESET_TORRENTS] (state) {
-    state.torrents = null
+    Vue.set(state, 'torrents', null)
   },
   [SEARCH_TORRENTS_SUCCESS] (state, { torrents }) {
-    state.torrents = torrents
+    Vue.set(state, 'torrents', torrents)
   },
   [SEARCH_TORRENTS_FAILURE] (state, { error }) {
-    state.torrentsError = error
+    Vue.set(state, 'torrentsError', error)
   },
   [ADD_TORRENT_SUCCESS] (state, { magnet, fileName }) {
-    state.selectedHash = magnet
-    state.selectedFileName = fileName
+    Vue.set(state, 'selectedHash', magnet)
+    Vue.set(state, 'selectedFileName', fileName)
   },
   [ADD_TORRENT_FAILURE] (state, { error }) {
-    state.selectedHashError = error
+    Vue.set(state, 'selectedHashError', error)
   },
   [GET_MOVIES_CATEGORIES_SUCCESS] (state, { categories }) {
-    state.categories = categories
+    Vue.set(state, 'categories', categories)
   },
   [GET_MOVIES_CATEGORIES_FAILURE] (state, { error }) {
-    state.categoriesError = error
+    Vue.set(state, 'categoriesError', error)
   },
   [GET_RECOMMENDED_MOVIES_SUCCESS] (state, { movies }) {
-    state.recommendedMovies = movies
+    Vue.set(state, 'recommendedMovies', movies)
   },
   [GET_RECOMMENDED_MOVIES_FAILURE] (state, { error }) {
-    state.recommendedMoviesError = error
+    Vue.set(state, 'recommendedMoviesError', error)
   },
   [GET_TOP_RATED_MOVIES_SUCCESS] (state, { movies }) {
-    state.topRatedMovies = movies
+    Vue.set(state, 'topRatedMovies', movies)
   },
   [GET_TOP_RATED_MOVIES_FAILURE] (state, { error }) {
-    state.topRatedMoviesError = error
+    Vue.set(state, 'topRatedMoviesError', error)
   },
   [SET_AVAILABLE_LANGS] (state, { langs }) {
-    state.availableLangs = langs
+    Vue.set(state, 'availableLangs', langs)
   },
   [CHANGE_SETTINGS] (state, { settings }) {
-    state.movieSettings = settings
+    Vue.set(state, 'movieSettings', settings)
   },
   [FETCH_SUBTITLES_SUCCESS] (state, { file }) {
-    state.subtitlesFile = file
+    Vue.set(state, 'subtitlesFile', file)
   },
   [FETCH_SUBTITLES_FAILURE] (state, { error }) {
-    state.subtitlesError = error
+    Vue.set(state, 'subtitlesError', error)
   }
 }
 
@@ -227,14 +229,22 @@ const actions = {
       )
     })
   },
+  [SET_MOVIE_DATA] ({ commit }, { payload }) {
+    return new Promise((resolve, reject) => {
+      const { torrents, langs } = payload
+      commit(SEARCH_TORRENTS_SUCCESS, { torrents })
+      commit(SET_AVAILABLE_LANGS, { langs })
+      resolve()
+    })
+  },
   [SEARCH_TORRENTS] ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       movie.getTorrents(
         payload.title,
-        ({ torrents, langs }) => {
-          commit(SEARCH_TORRENTS_SUCCESS, { torrents })
-          commit(SET_AVAILABLE_LANGS, { langs })
-          resolve(torrents)
+        () => {
+          // commit(SEARCH_TORRENTS_SUCCESS, { torrents })
+          // commit(SET_AVAILABLE_LANGS, { langs })
+          // resolve(torrents)
         },
         (error) => {
           commit(SEARCH_TORRENTS_FAILURE, { error })

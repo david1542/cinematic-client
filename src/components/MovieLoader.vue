@@ -79,6 +79,7 @@ export default {
   z-index: -10;
   opacity: 0;
   transition: opacity 0.3s;
+  color: white !important;
 }
 
 .loader-container.visible {
@@ -87,7 +88,7 @@ export default {
 }
 
 .percent-text {
-  color: white;
+  color: white !important;
 }
 
 .loader-container p {

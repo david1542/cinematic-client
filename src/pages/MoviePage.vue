@@ -1,5 +1,5 @@
 <template>
-  <AppPage>
+  <AppPage waitForUser>
     <MovieLoader
       :loading="loading"
       :progress="progress"
@@ -61,6 +61,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 import MoviePlayer from '@/components/MoviePlayer'
 import MovieLoader from '@/components/MovieLoader'
 import LikeButton from '@/components/LikeButton'
@@ -75,6 +76,7 @@ import {
   getClientStats,
   addTorrent
 } from '@/actions/creators'
+
 export default {
   name: 'MoviePage',
   props: {
@@ -90,6 +92,9 @@ export default {
     MovieGallery,
     MovieSettingsBar
   },
+  mixins: [
+    asyncDataStatus
+  ],
   data () {
     return {
       trailer: null,
@@ -106,8 +111,12 @@ export default {
   },
   methods: {
     getData () {
-      this.$store.dispatch(getMovie(this.id))
-      this.$store.dispatch(getRecommended(this.id))
+      Promise.all([
+        this.$store.dispatch(getMovie(this.id)),
+        this.$store.dispatch(getRecommended(this.id))
+      ]).then(() => {
+        this.asyncDataStatus_fetched()
+      })
     },
     checkProgress () {
       this.loading = true

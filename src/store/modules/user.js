@@ -5,14 +5,15 @@ import { REGISTER_SUCCESS, REGISTER_FAILURE,
   LOGIN_FAILURE, LOGOUT_REQUEST, ADD_TO_FAVORITES,
   ADD_TO_FAVORITES_SUCCESS, ADD_TO_FAVORITES_FAILURE,
   REMOVE_FROM_FAVORITES, REMOVE_FROM_FAVORITES_SUCCESS,
-  REMOVE_FROM_FAVORITES_FAILURE } from '../../actions'
+  REMOVE_FROM_FAVORITES_FAILURE, FETCH_USER } from '../../actions'
+import router from '@/router'
 
 const state = {
   user: null,
   registerError: false,
   loginError: false,
   addToFavoritesError: false,
-  token: localStorage.getItem('user-token') || ''
+  token: localStorage.getItem('user-token') || null
 }
 
 const mutations = {
@@ -51,8 +52,12 @@ const mutations = {
 
 const getters = {
   isAuthenticated: state => !!state.token,
-  getUsername: state => state.user.firstName,
-  isMovieInFavorites: state => id => state.user.favorites.some(movieId => String(movieId) === String(id))
+  getUsername: state => state.user && state.user.firstName,
+  isMovieInFavorites: state => {
+    return id => {
+      return state.user && state.user.favorites.some(movieId => String(movieId) === String(id))
+    }
+  }
 }
 
 const actions = {
@@ -89,8 +94,19 @@ const actions = {
   [LOGOUT_REQUEST] ({ commit }) {
     return new Promise((resolve, reject) => {
       auth.logout().then(() => {
+        router.push({ name: 'LoginPage' })
         commit(LOGOUT_REQUEST)
         resolve()
+      })
+    })
+  },
+  [FETCH_USER] ({ commit }) {
+    return new Promise((resolve, reject) => {
+      user.getMyUser(user => {
+        commit(LOGIN_SUCCESS, { user })
+        resolve()
+      }, err => {
+        reject(err)
       })
     })
   },

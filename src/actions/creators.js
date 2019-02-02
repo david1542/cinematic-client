@@ -11,6 +11,10 @@ export const loginUser = userDetails => ({
   payload: { userDetails }
 })
 
+export const fetchUser = () => ({
+  type: 'user/' + ACTIONS.FETCH_USER
+})
+
 export const logoutUser = () => ({
   type: 'user/' + ACTIONS.LOGOUT_REQUEST
 })
@@ -79,4 +83,9 @@ export const pauseTorrent = magnet => ({
 
 export const getClientStats = () => ({
   type: 'movie/' + ACTIONS.GET_CLIENT_STATS
+})
+
+export const setMovieData = (payload) => ({
+  type: 'movie/' + ACTIONS.SET_MOVIE_DATA,
+  payload
 })

@@ -1,6 +1,9 @@
 <template>
-  <AppPage>
-    <div class="movie-list">
+  <AppPage waitForUser>
+    <div
+      v-if="asyncDataStatus_ready"
+      class="movie-list"
+    >
       <MovieListItem
         v-for="movie in movies"
         :key="movie.id"
@@ -12,13 +15,18 @@
 
 <script>
 import { mapState } from 'vuex'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 import { getMovies } from '../actions/creators'
 import MovieListItem from '@/components/MovieListItem'
+
 export default {
   name: 'FavoritesPage',
   components: {
     MovieListItem
   },
+  mixins: [
+    asyncDataStatus
+  ],
   data () {
     return {
       movies: null,
@@ -26,14 +34,28 @@ export default {
     }
   },
   computed: mapState('user', ['user']),
+  methods: {
+    fetchData () {
+      const ids = this.user.favorites
+      this.$store.dispatch(getMovies(ids)).then(movies => {
+        this.asyncDataStatus_fetched()
+        this.movies = movies
+      }).catch(err => {
+        this.error = err
+      })
+    }
+  },
   mounted () {
-    const ids = this.user.favorites
-    this.$store.dispatch(getMovies(ids)).then(movies => {
-      this.movies = movies
-    }).catch(err => {
-      this.error = err
-    })
-    // fetch favorites movies
+    if (this.user) {
+      this.fetchData()
+    }
+  },
+  watch: {
+    user () {
+      if (this.user) {
+        this.fetchData()
+      }
+    }
   }
 }
 </script>
