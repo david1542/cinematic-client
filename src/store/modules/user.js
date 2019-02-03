@@ -1,11 +1,12 @@
 import auth from '@/api/auth'
 import user from '@/api/user'
+import sockets from '@/sockets'
 import { REGISTER_SUCCESS, REGISTER_FAILURE,
   REGISTER_REQUEST, LOGIN_REQUEST, LOGIN_SUCCESS,
   LOGIN_FAILURE, LOGOUT_REQUEST, ADD_TO_FAVORITES,
   ADD_TO_FAVORITES_SUCCESS, ADD_TO_FAVORITES_FAILURE,
   REMOVE_FROM_FAVORITES, REMOVE_FROM_FAVORITES_SUCCESS,
-  REMOVE_FROM_FAVORITES_FAILURE, FETCH_USER } from '../../actions'
+  REMOVE_FROM_FAVORITES_FAILURE, FETCH_USER, INITIATE_SOCKET } from '../../actions'
 import router from '@/router'
 
 const state = {
@@ -61,6 +62,12 @@ const getters = {
 }
 
 const actions = {
+  [INITIATE_SOCKET] () {
+    return new Promise((resolve) => {
+      sockets()
+      resolve()
+    })
+  },
   [REGISTER_REQUEST] ({ commit }, { payload }) {
     return new Promise((resolve, reject) => {
       auth.register(
@@ -76,12 +83,13 @@ const actions = {
       )
     })
   },
-  [LOGIN_REQUEST] ({ commit }, { payload }) {
+  [LOGIN_REQUEST] ({ commit, dispatch }, { payload }) {
     return new Promise((resolve, reject) => {
       auth.login(
         payload.userDetails,
         (user) => {
           commit(LOGIN_SUCCESS, { user })
+          dispatch(INITIATE_SOCKET)
           resolve()
         },
         (err) => {
@@ -100,10 +108,11 @@ const actions = {
       })
     })
   },
-  [FETCH_USER] ({ commit }) {
+  [FETCH_USER] ({ commit, dispatch }) {
     return new Promise((resolve, reject) => {
       user.getMyUser(user => {
         commit(LOGIN_SUCCESS, { user })
+        dispatch(INITIATE_SOCKET)
         resolve()
       }, err => {
         reject(err)

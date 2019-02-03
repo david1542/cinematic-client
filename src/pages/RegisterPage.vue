@@ -66,6 +66,12 @@ export default {
       }
 
       this.$store.dispatch(registerUser(userDetails)).then(() => {
+        this.$swal({
+          type: 'success',
+          text: `Thank you for registering to Cinematic! Now
+            you need be approved in order to login`
+          // footer: '<a href>Why do I have this issue?</a>'
+        })
         this.$router.push({name: 'HomePage'})
       }).catch(err => {
         this.error = err

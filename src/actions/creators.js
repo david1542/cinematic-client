@@ -85,7 +85,11 @@ export const getClientStats = () => ({
   type: 'movie/' + ACTIONS.GET_CLIENT_STATS
 })
 
-export const setMovieData = (payload) => ({
+export const setMovieData = payload => ({
   type: 'movie/' + ACTIONS.SET_MOVIE_DATA,
   payload
+})
+
+export const initiateSockets = () => ({
+  type: 'user/' + ACTIONS.INITIATE_SOCKET
 })
