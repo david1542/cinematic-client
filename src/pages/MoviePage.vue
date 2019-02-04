@@ -68,6 +68,7 @@ import LikeButton from '@/components/LikeButton'
 import BigHeartButton from '@/components/BigHeartButton'
 import MovieGallery from '@/components/MovieGallery'
 import MovieSettingsBar from '@/components/MovieSettingsBar'
+import EventBus from '@/eventBus'
 import {
   getMovie,
   addToFavorites,
@@ -107,7 +108,11 @@ export default {
     }
   },
   mounted () {
-    this.getData()
+    if (this.user) {
+      this.getData()
+    } else {
+      EventBus.$on('authenticated', this.getData)
+    }
   },
   methods: {
     getData () {
@@ -163,6 +168,7 @@ export default {
       'torrents',
       'availableLangs'
     ]),
+    ...mapState('user', ['user']),
     ...mapGetters('user', ['isMovieInFavorites']),
     isFavorite () {
       return this.isMovieInFavorites(this.specificMovie.id)

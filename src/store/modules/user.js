@@ -63,10 +63,7 @@ const getters = {
 
 const actions = {
   [INITIATE_SOCKET] () {
-    return new Promise((resolve) => {
-      sockets()
-      resolve()
-    })
+    return sockets()
   },
   [REGISTER_REQUEST] ({ commit }, { payload }) {
     return new Promise((resolve, reject) => {
@@ -88,9 +85,12 @@ const actions = {
       auth.login(
         payload.userDetails,
         (user) => {
-          commit(LOGIN_SUCCESS, { user })
           dispatch(INITIATE_SOCKET)
-          resolve()
+            .then(() => {
+              commit(LOGIN_SUCCESS, { user })
+              resolve(user)
+            })
+            .catch(reject)
         },
         (err) => {
           commit(LOGIN_FAILURE)
@@ -111,9 +111,12 @@ const actions = {
   [FETCH_USER] ({ commit, dispatch }) {
     return new Promise((resolve, reject) => {
       user.getMyUser(user => {
-        commit(LOGIN_SUCCESS, { user })
         dispatch(INITIATE_SOCKET)
-        resolve()
+          .then(() => {
+            commit(LOGIN_SUCCESS, { user })
+            resolve(user)
+          })
+          .catch(reject)
       }, err => {
         reject(err)
       })
