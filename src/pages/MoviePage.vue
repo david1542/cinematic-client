@@ -114,6 +114,9 @@ export default {
       EventBus.$on('authenticated', this.getData)
     }
   },
+  beforeDestroy () {
+    EventBus.$off('authenticated', this.getData)
+  },
   methods: {
     getData () {
       Promise.all([
