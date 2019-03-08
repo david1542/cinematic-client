@@ -4,28 +4,30 @@ import {
   SERVER_URL
 } from './config'
 
+const language = localStorage.getItem('language') || 'en'
+
 export const moviesQueryUrl = (query) => {
-  return OMDB_ROOT + 'search/movie?api_key=' + API_KEY + '&query=' + query
+  return OMDB_ROOT + 'search/movie?api_key=' + API_KEY + '&query=' + query + '&language=' + language
 }
 
 export const popularMoviesUrl = () => {
-  return OMDB_ROOT + 'movie/popular?api_key=' + API_KEY
+  return OMDB_ROOT + 'movie/popular?api_key=' + API_KEY + '&language=' + language
 }
 
 export const topRatedMoviesUrl = () => {
-  return 'https://api.themoviedb.org/3/movie/top_rated?api_key=01583083c32e46250aa6bd51fb1b79d6'
+  return 'https://api.themoviedb.org/3/movie/top_rated?api_key=01583083c32e46250aa6bd51fb1b79d6' + '&language=' + language
 }
 
 export const getRecommendedMovies = (id) => {
-  return OMDB_ROOT + 'movie/' + id + '/recommendations?api_key=' + API_KEY
+  return OMDB_ROOT + 'movie/' + id + '/recommendations?api_key=' + API_KEY + '&language=' + language
 }
 
 export const getGenres = () => {
-  return OMDB_ROOT + 'genre/movie/list?api_key=' + API_KEY
+  return OMDB_ROOT + 'genre/movie/list?api_key=' + API_KEY + '&language=' + language
 }
 
 export const getMoviesByGenre = (genreId) => {
-  return OMDB_ROOT + 'discover/movie?with_genres=' + genreId + '&api_key=' + API_KEY
+  return OMDB_ROOT + 'discover/movie?with_genres=' + genreId + '&api_key=' + API_KEY + '&language=' + language
 }
 
 export const generateImageUrl = (size, name) => {
@@ -33,11 +35,11 @@ export const generateImageUrl = (size, name) => {
 }
 
 export const specificMovieUrl = (id) => {
-  return OMDB_ROOT + 'movie/' + id + '?api_key=' + API_KEY
+  return OMDB_ROOT + 'movie/' + id + '?api_key=' + API_KEY + '&language=' + language
 }
 
 export const getMovieCast = (id) => {
-  return OMDB_ROOT + 'movie/' + id + '/credits?api_key=' + API_KEY
+  return OMDB_ROOT + 'movie/' + id + '/credits?api_key=' + API_KEY + '&language=' + language
 }
 
 export const generateVideosUrl = (id) => {

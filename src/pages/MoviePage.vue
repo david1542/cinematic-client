@@ -13,14 +13,14 @@
       <div v-if="specificMovie" class='movie-container'>
         <img :src='specificMovie.poster' alt=''>
         <div class='movie-overview'>
-          <h1 class='title'>{{ specificMovie.original_title }}</h1>
+          <h1 class='title'>{{ specificMovie.title }}</h1>
           <h2 class='description'>{{ specificMovie.overview }}</h2>
           <div class="details">
-            <h2 class="detail"><strong>Year:</strong> {{ specificMovie.release_date }} </h2>
-            <h2 class="detail"><strong>Length:</strong> {{ specificMovie.runtime }} minutes </h2>
-            <h2 class="detail"><strong>Genres:</strong> {{ genres }} </h2>
-            <h2 class="detail"><strong>Actors:</strong> {{ actors }} </h2>
-            <h2 class="detail"><strong>Director:</strong> {{ specificMovie.director }} </h2>
+            <h2 class="detail"><strong>{{ $t('year') }}:</strong> {{ specificMovie.release_date }} </h2>
+            <h2 class="detail"><strong>{{ $t('length') }}:</strong> {{ specificMovie.runtime }} {{ $t('minutes') }} </h2>
+            <h2 class="detail"><strong>{{ $t('genres') }}:</strong> {{ genres }} </h2>
+            <h2 class="detail"><strong>{{ $t('actors') }}:</strong> {{ actors }} </h2>
+            <h2 class="detail"><strong>{{ $t('director') }}:</strong> {{ specificMovie.director }} </h2>
           </div>
           <div class="rating">
             <div class="rating-wrapper">
@@ -45,7 +45,7 @@
         </LikeButton>
       </div>
       <div class="recommended">
-        <h2><strong>You may also like...</strong></h2>
+        <h2><strong>{{ $t('youMayAlsoLike') }}</strong></h2>
         <MovieGallery
           v-if="recommendedMovies"
           :movies="recommendedMovies"
@@ -218,6 +218,11 @@ export default {
   top: 100px;
   cursor: pointer;
 }
+
+.rtl .like-button {
+  right: initial;
+  left: 65px;
+}
 .trailer {
   position: fixed;
   z-index: -1;
@@ -245,9 +250,14 @@ export default {
   padding: 60px 40px;
   flex-wrap: wrap;
   z-index: 2;
-  opacity: 0.1;
+  /* opacity: 0.1; */
+  opacity: 1;
   transition: 0.3s;
   animation: fadeOutAnimation 1s ease-out 1s forwards;
+}
+
+.rtl .movie-container {
+  flex-direction: row-reverse;
 }
 
 .recommended {
@@ -266,6 +276,13 @@ export default {
   color: white;
   font-weight: normal;
   text-align: left;
+}
+
+.rtl .recommended > h2 {
+  text-align: right;
+  padding-left: 0;
+  padding-right: 40px;
+  direction: rtl;
 }
 
 .movie-container:hover {
@@ -289,6 +306,10 @@ export default {
   text-align: left;
 }
 
+.rtl .movie-container > .movie-overview > .title {
+  text-align: right;
+}
+
 .movie-container > .movie-overview > .description,
 .movie-container > .movie-overview > .details > .detail {
   color: white;
@@ -296,6 +317,13 @@ export default {
   font-weight: normal;
   text-align: left;
 }
+
+.rtl .movie-container > .movie-overview > .description,
+.rtl .movie-container > .movie-overview > .details > .detail {
+  text-align: right;
+  direction: rtl;
+}
+
 .movie-container > .movie-overview > .details {
   margin-top: 20px;
 }
@@ -307,6 +335,11 @@ export default {
   width: 50px;
   height: 50px;
   z-index: 3;
+}
+
+.rtl .movie-container > .movie-overview > .rating {
+  right: initial;
+  left: 0;
 }
 
 .movie-container > .movie-overview > .rating > .rating-wrapper {

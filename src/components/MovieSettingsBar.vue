@@ -3,26 +3,28 @@
     <div v-if="torrents && torrents.length > 0" class="settings-items">
       <TorrentsPicker
         :torrents="torrents"
+        :torrentIndex="torrentIndex"
         @change="torrentChanged"
       />
       <LanguagePicker
         :langs="availableLangs"
+        :languageIndex="languageIndex"
         @change="languageChanged"
       />
       <button
         class="button"
         @click="watchMovie"
       >
-        Watch Movie
+        {{ $t('watchMovie') }}
       </button>
     </div>
     <div v-else-if="torrents && torrents.length === 0" class="message">
       <i class="fas fa-exclamation-circle"></i>
-      No Available Torrents
+      {{ $t('noTorrents') }}
     </div>
     <div v-else class="message">
       <i class="fas fa-spinner fa-spin"></i>
-      Loading Torrents...
+      {{ $t('searchingTorrents') }}
     </div>
   </div>
 </template>
@@ -68,6 +70,14 @@ export default {
       this.$emit('add-torrent', this.torrentIndex)
     }
   },
+  watch: {
+    langs () {
+      if (this.langs) {
+        const index = this.langs.findIndex(lang => lang.code === this.$i18n.locale)
+        this.languageIndex = index !== -1 ? index : 0
+      }
+    }
+  },
   computed: {
     availableLangs () {
       return this.langs.filter(lang => lang.name && lang.code)
@@ -86,6 +96,15 @@ export default {
   bottom: 0;
   left: 0;
 }
+
+.rtl .settings-items {
+  left: initial;
+  right: 0;
+  padding-left: 0;
+  padding-right: 40px;
+  flex-direction: row-reverse;
+}
+
 button.btn-primary {
   height: 37px;
 }
@@ -101,10 +120,25 @@ button.btn-primary .fa-spinner {
   padding-left: 40px;
 }
 
+.rtl .message {
+  left: initial;
+  right: 0;
+  direction: rtl;
+  padding-left: 0;
+  padding-right: 40px;
+  font-size: 15px;
+}
+
 .message > .fas {
   font-size: 20px;
   margin-right: 4px;
 }
+
+.rtl .message > .fas {
+  margin-right: 0px;
+  margin-left: 4px;
+}
+
 .button {
   display: inline-block;
   width: 20%;
@@ -121,5 +155,9 @@ button.btn-primary .fa-spinner {
   border-radius: 20px;
   outline: none;
   text-decoration: none;
+}
+
+.rtl .button {
+  direction: rtl;
 }
 </style>

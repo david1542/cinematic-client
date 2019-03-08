@@ -15,6 +15,7 @@ import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@fortawesome/fontawesome-free/css/all.css'
 import 'vuetify/dist/vuetify.min.css'
 import './plugins/vuetify'
+import i18n from './i18n'
 
 Vue.config.productionTip = false
 
@@ -31,5 +32,6 @@ new Vue({
   router,
   store,
   components: { App },
+  i18n,
   template: '<App />'
 })

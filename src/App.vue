@@ -1,5 +1,7 @@
 <template>
-  <v-app>
+  <v-app
+    :class="{'rtl': $i18n.locale === 'he'}"
+  >
     <Navbar />
     <v-content>
       <v-container fluid class="p-0 h-100">

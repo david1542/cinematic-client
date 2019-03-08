@@ -1,9 +1,9 @@
 <template>
   <AppPage waitForUser>
     <template v-if="asyncDataStatus_ready">
-      <h2 class="popular-movies">Popular</h2>
+      <h2 class="popular-movies">{{ $t('popular') }}</h2>
       <MovieGallery :movies="popularMovies" class="margin-bottom-200" />
-      <h2 class="popular-movies">Must See Movies</h2>
+      <h2 class="popular-movies">{{ $t('mustSeeMovies') }}</h2>
       <MovieGallery :movies="topRatedMovies" class="margin-bottom-200" />
       <CategoryList :categories="categories" />
     </template>

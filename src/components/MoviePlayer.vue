@@ -1,8 +1,8 @@
 <template>
   <div class="player-container">
-    <MovieHUD
+    <!-- <MovieHUD
       @load-subtitles="loadSubtitles"
-    />
+    /> -->
     <video
       autoplay
       controls
@@ -29,8 +29,9 @@
 <script>
 import { mapState } from 'vuex'
 import { SERVER_URL } from '../config'
-import { pauseTorrent } from '@/actions/creators'
+// import { pauseTorrent } from '@/actions/creators'
 import MovieHUD from './MovieHUD'
+
 export default {
   name: 'MoviePlayer',
   props: {
@@ -54,11 +55,11 @@ export default {
       customSubtitlesUrl: null
     }
   },
-  beforeDestroy () {
-    if (this.selectedHash) {
-      this.$store.dispatch(pauseTorrent(this.selectedHash))
-    }
-  },
+  // beforeDestroy () {
+  //   if (this.selectedHash) {
+  //     this.$store.dispatch(pauseTorrent(this.selectedHash))
+  //   }
+  // },
   methods: {
     loadSubtitles ({ file }) {
       const reader = new FileReader()

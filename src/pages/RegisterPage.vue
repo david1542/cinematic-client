@@ -1,32 +1,114 @@
 <template>
   <AppPage>
-    <h2>Fill in all the details</h2>
+    <h2>{{ $t('fillAllDetails') }}</h2>
     <form class="register-form">
       <div class="form-group">
-        <label for="firstName">First Name</label>
-        <input id="firstName" class="input-field" type="text" v-model="firstName" />
+        <label for="firstName">{{ $t('firstName') }}</label>
+        <input
+          :class="{'error-field': $v.form.firstName.$error}"
+          id="firstName"
+          class="input-field"
+          type="text"
+          v-model="form.firstName"
+        />
+        <div
+          class="errors"
+          v-show="$v.form.firstName.$error"
+        >
+          <span v-show="!$v.form.firstName.required">
+            {{ $t('fieldRequired') }}
+          </span>
+        </div>
       </div>
       <div class="form-group">
-        <label for="lastName">Last Name</label>
-        <input id="lastName" class="input-field" type="text" v-model="lastName" />
+        <label for="lastName">{{ $t('lastName') }}</label>
+        <input
+          :class="{'error-field': $v.form.lastName.$error}"
+          id="lastName"
+          class="input-field"
+          type="text"
+          v-model="form.lastName" />
+          <div
+            class="errors"
+            v-show="$v.form.lastName.$error"
+          >
+            <span v-show="!$v.form.lastName.required">
+              {{ $t('fieldRequired') }}
+            </span>
+          </div>
       </div>
       <div class="form-group">
-        <label for="email">Email</label>
-        <input id="email" class="input-field" type="text" v-model="email" />
+        <label for="email">{{ $t('email') }}</label>
+        <input
+          :class="{'error-field': $v.form.email.$error}"
+          id="email"
+          class="input-field"
+          type="text"
+          v-model="form.email"
+        />
+        <div
+          class="errors"
+          v-show="$v.form.email.$error"
+        >
+          <span v-show="!$v.form.email.required">
+            {{ $t('fieldRequired') }}
+          </span>
+          <span v-show="!$v.form.email.email">
+            {{ $t('invalidEmail') }}
+          </span>
+        </div>
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
-        <input id="password" class="input-field" type="password" v-model="password" />
+        <label for="password">{{ $t('password') }}</label>
+        <input
+          :class="{'error-field': $v.form.password.$error}"
+          id="password"
+          class="input-field"
+          type="password"
+          v-model="form.password"
+        />
+        <div
+          class="errors"
+          v-show="$v.form.password.$error"
+        >
+          <span v-show="!$v.form.password.required">
+            {{ $t('fieldRequired') }}
+          </span>
+          <span v-show="!$v.form.password.minLength">
+            Password must be at least 6 characters
+          </span>
+        </div>
       </div>
-      <button type="button" class="button" v-on:click="register">
+      <div class="form-group">
+        <label for="cpassword">{{ $t('cpassword') }}</label>
+        <input
+          :class="{'error-field': $v.form.cpassword.$error}"
+          id="cpassword"
+          class="input-field"
+          type="password"
+          v-model="form.cpassword"
+        />
+        <div
+          class="errors"
+          v-show="$v.form.cpassword.$error"
+        >
+          <span v-show="!$v.form.cpassword.required">
+            {{ $t('fieldRequired') }}
+          </span>
+          <span v-show="$v.form.cpassword.required && !$v.form.password.sameAsPassword">
+            Passwords don't match
+          </span>
+        </div>
+      </div>
+      <button type="button" class="button" v-on:click="submit">
         <span v-if="loading">
           Registering
           <i class="fas fa-circle-notch fa-spin"></i>
         </span>
-        <span v-else>Sign Up!</span>
+        <span v-else>{{ $t('signUp') }}</span>
       </button>
       <router-link class="button link" :to="{name: 'LoginPage'}">
-        Log in
+        {{ $t('login') }}
       </router-link>
     </form>
   </AppPage>
@@ -35,29 +117,65 @@
 <script>
 import { registerUser } from '../actions/creators'
 import asyncDataStatus from '@/mixins/asyncDataStatus'
+import { validationMixin } from 'vuelidate'
+import { required, sameAs,
+  minLength, email } from 'vuelidate/lib/validators'
 
 export default {
   name: 'RegisterPage',
+  mixins: [
+    asyncDataStatus,
+    validationMixin
+  ],
+  validations: {
+    form: {
+      firstName: {
+        required
+      },
+      lastName: {
+        required
+      },
+      email: {
+        required,
+        email
+      },
+      password: {
+        required,
+        minLength: minLength(6)
+      },
+      cpassword: {
+        required,
+        sameAsPassword: sameAs('password')
+      }
+    }
+  },
   data () {
     return {
-      firstName: null,
-      lastName: null,
-      email: null,
-      password: null,
+      form: {
+        firstName: null,
+        lastName: null,
+        email: null,
+        password: null,
+        cpassword: null
+      },
       loading: false,
       error: null
     }
   },
-  mixins: [
-    asyncDataStatus
-  ],
   mounted () {
     this.asyncDataStatus_fetched()
   },
   methods: {
-    register () {
+    submit () {
+      this.$v.form.$touch()
+      if (this.$v.form.$error) {
+        console.log(this.$v.form.$error)
+        return
+      }
+
+      // Fields are good
       this.loading = true
-      const { firstName, lastName, email, password } = this
+      const { firstName, lastName, email, password } = this.form
       const userDetails = {
         firstName,
         lastName,
@@ -105,10 +223,40 @@ h2 {
   margin-left: 5px;
 }
 
+.register-form > .form-group > .errors {
+  position: absolute;
+  right: 100%;
+  height: 50px;
+  white-space: nowrap;
+  bottom: 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 9px 25px 0 33px;
+}
+
+.register-form > .form-group > .errors > span {
+  font-weight: 600;
+  font-size: 12px;
+  text-align: right;
+}
+
+.register-form > .form-group {
+  position: relative;
+}
+
 .register-form > .form-group > label {
   text-align: left;
   display: block;
   font-weight: bold;
+}
+
+.rtl .register-form > .form-group > label {
+  text-align: right;
+}
+
+.register-form > .form-group .input-field.error-field {
+  border: 2px solid red;
 }
 
 .register-form > .form-group .input-field {
@@ -118,7 +266,7 @@ h2 {
 	text-align: left;
 	background-color: #383A3B;
 	padding: .9em 1.8em;
-	border: none;
+	border: 2px solid #383A3B;
 	outline: none;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
@@ -146,6 +294,10 @@ h2 {
   margin: auto;
   outline: none;
   text-decoration: none;
+}
+
+.rtl .button {
+  direction: rtl;
 }
 
 .button:hover {

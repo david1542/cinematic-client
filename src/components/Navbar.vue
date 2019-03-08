@@ -1,6 +1,7 @@
 <template>
-  <div v-if="isAuthenticated">
+  <div>
     <v-navigation-drawer
+      v-if="isAuthenticated"
       :mini-variant.sync="miniVariant"
       :clipped="clipped"
       v-model="drawer"
@@ -8,6 +9,7 @@
       fixed
       app
       dark
+      :right="$i18n.locale === 'he'"
     >
       <v-list class="pa-1 border-light">
         <v-list-tile avatar>
@@ -28,7 +30,7 @@
           router
           :to="item.to"
           :key="i"
-          @click.stop="item.title === 'Logout' && logout()"
+          @click.stop="logout"
           v-for="(item, i) in items"
           v-show="item.auth ? isAuthenticated : true"
           exact
@@ -46,17 +48,23 @@
         Cinematic v1.0
       </div>
     </v-navigation-drawer>
-    <v-toolbar app dark>
-      <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
+    <v-toolbar
+      app dark
+    >
+      <v-toolbar-side-icon
+        @click="drawer = !drawer"
+        v-if="isAuthenticated"
+      ></v-toolbar-side-icon>
       <v-toolbar-title class="white--text">
         <router-link :to="{name: 'HomePage'}" class="text-light brand">
-          Cinematic
+          {{ $t('appName') }}
         </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <div class="nav-items-wrapper" v-if="isAuthenticated">
+      <div class="nav-items-wrapper">
         <v-btn
           icon
+          v-show="isAuthenticated"
           v-if="!searchExpanded"
           @click="showSearch"
         >
@@ -65,6 +73,7 @@
           </v-icon>
         </v-btn>
         <v-text-field
+          v-show="isAuthenticated"
           v-else
           v-model="searchTerm"
           @blur="hideSearch"
@@ -73,41 +82,55 @@
           color="error"
           v-focus
         />
+        <div
+          class="languages-container"
+          :class="{'open': languagesOpen}"
+        >
+          <div
+            class="current-language"
+            @click="languagesOpen = !languagesOpen"
+          >
+            <span class="flag-icon" :class="languageIconClass"></span>
+          </div>
+          <div class="language-list">
+            <div
+              class="item"
+              @click="switchLanguage('en')"
+            >
+              {{ $t('english') }}
+              <span class="item flag-icon flag-icon-us"></span>
+            </div>
+            <div
+              class="item"
+              @click="switchLanguage('he')"
+            >
+              {{ $t('hebrew') }}
+              <span class="item flag-icon flag-icon-il"></span>
+            </div>
+          </div>
+        </div>
       </div>
-      <template v-else>
-        <v-toolbar-items>
-          <!-- <v-btn> -->
-            <router-link :to="{name: 'RegisterPage'}">
-              Register
-            </router-link>
-          <!-- </v-btn> -->
-          <!-- <v-btn> -->
-            <router-link :to="{name: 'LoginPage'}">
-              Login
-            </router-link>
-          <!-- </v-btn> -->
-        </v-toolbar-items>
-      </template>
     </v-toolbar>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { logoutUser } from '../actions/creators'
+import { logoutUser, changeLanguage } from '../actions/creators'
 export default {
   name: 'Navbar',
   data () {
     return {
+      languagesOpen: false,
       searchTerm: '',
       drawer: false,
       searchExpanded: false,
       clipped: false,
       miniVariant: false,
       items: [
-        { icon: 'fas fa-home', title: 'Home', to: '/' },
-        { icon: 'fas fa-film', title: 'Favorites', to: '/favorites', auth: true },
-        { icon: 'fas fa-sign-out-alt', title: 'Logout', auth: true }
+        { icon: 'fas fa-home', title: this.$t('home'), to: '/' },
+        { icon: 'fas fa-film', title: this.$t('favorites'), to: '/favorites', auth: true },
+        { icon: 'fas fa-sign-out-alt', title: this.$t('logout'), auth: true }
       ]
     }
   },
@@ -120,6 +143,10 @@ export default {
     }
   },
   methods: {
+    switchLanguage (language) {
+      this.$store.dispatch(changeLanguage(language))
+        .then(() => location.reload())
+    },
     logout () {
       this.$store.dispatch(logoutUser()).then(() => {
         this.$router.push('/login')
@@ -146,7 +173,29 @@ export default {
     ...mapGetters('user', [
       'isAuthenticated',
       'getUsername'
-    ])
+    ]),
+    languageIconClass () {
+      switch (this.$i18n.locale) {
+        case 'en': {
+          return {
+            'flag-icon-us': true,
+            'flag-icon': true
+          }
+        }
+        case 'he': {
+          return {
+            'flag-icon-il': true,
+            'flag-icon': true
+          }
+        }
+        default: {
+          return {
+            'flag-icon-us': true,
+            'flag-icon': true
+          }
+        }
+      }
+    }
   }
 }
 </script>
@@ -279,6 +328,7 @@ export default {
   width: 400px;
   display: flex;
   flex-direction: row-reverse;
+  align-items: center;
 }
 
 .nav-items-wrapper input {
@@ -295,6 +345,23 @@ export default {
 
 .v-toolbar {
   box-shadow: none !important;
+}
+
+.rtl .v-toolbar {
+  direction: rtl;
+}
+
+.rtl .v-toolbar__title {
+  margin-left: 0;
+  margin-right: 20px;
+}
+
+.rtl .v-navigation-drawer[data-booted=true] {
+  direction: rtl !important;
+}
+
+.rtl .v-list__tile__title {
+  text-align: right;
 }
 
 .v-toolbar__items > a,
@@ -320,5 +387,103 @@ export default {
   font-size: 15px;
   user-select: none;
   padding: 24px;
+}
+
+.flag-icon {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  line-height: 1.8em;
+}
+.flag-icon:before {
+  content: "\00a0";
+}
+
+.flag-icon-us {
+  background-image: url(../assets/flags/us.svg);
+}
+
+.flag-icon-il {
+  background-image: url(../assets/flags/il.svg);
+}
+
+.languages-container {
+  position: relative;
+  margin-right: 30px;
+  margin-top: 3px;
+}
+
+.rtl .languages-container {
+  margin-left: 30px;
+  margin-right: 0;
+}
+
+.languages-container > .current-language {
+  cursor: pointer;
+  position: relative;
+}
+
+.languages-container > .current-language:after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid white;
+  position: absolute;
+  left: -17px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  /* transition: 0.3s; */
+}
+
+.languages-container.open > .current-language:after {
+  transform: rotate(180deg);
+}
+
+.languages-container.open > .language-list {
+  opacity: 1;
+  visibility: visible;
+}
+
+.languages-container > .language-list {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  transition: 0.3s;
+  opacity: 0;
+  visibility: hidden;
+  right: -34px;
+  margin-top: 10px;
+  background-color: black;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
+}
+
+.languages-container > .language-list > .item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px 9px;
+  justify-content: space-between;
+  transition: 0.3s;
+  font-weight: bold;
+}
+
+/* .languages-container > .language-list > .item:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+} */
+
+.languages-container > .language-list > .item > .flag-icon {
+  margin-left: 5px;
+}
+
+.rtl .languages-container > .language-list > .item > .flag-icon {
+  margin-left: 0;
+  margin-right: 5px;
 }
 </style>

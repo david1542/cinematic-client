@@ -93,3 +93,8 @@ export const setMovieData = payload => ({
 export const initiateSockets = () => ({
   type: 'user/' + ACTIONS.INITIATE_SOCKET
 })
+
+export const changeLanguage = (language) => ({
+  type: 'general/' + ACTIONS.CHANGE_LANGUAGE,
+  payload: language
+})

@@ -4,10 +4,10 @@
         <img :src="movie.poster" alt="Movie Poster" />
       </div>
       <div class="content">
-        <h2 class="title">{{ movie.original_title }}</h2>
+        <h2 class="title">{{ movie.title }}</h2>
         <p class="overview">{{ movie.overview }}</p>
         <router-link class="btn btn-primary" :to="{name: 'MoviePage', params: {id: movie.id}}">
-          Explore More!
+          {{ $t('exploreMore') }}
         </router-link>
       </div>
     </div>
@@ -19,11 +19,6 @@ export default {
     movie: {
       required: true,
       type: Object
-    }
-  },
-  methods: {
-    showMovie: function (id) {
-      this.$router.push({path: 'movie', query: { id }})
     }
   }
 }
@@ -37,11 +32,21 @@ export default {
   height: 400px;
 }
 
+.rtl .movie-item {
+  flex-direction: row-reverse;
+}
+
 .movie-item > .movie-img {
   height: 100%;
   margin-right: 20px;
   flex-basis: 20%;
 }
+
+.rtl .movie-item > .movie-img {
+  margin-right: 0;
+  margin-left: 20px;
+}
+
 .movie-item .movie-img > img {
   width: 250px;
   /* width: 100%; */
@@ -54,6 +59,11 @@ export default {
   align-items: flex-start;
   flex-basis: 80%;
 }
+
+.rtl .movie-item > .content {
+  direction: rtl;
+}
+
 .movie-item > .content > .title {
   color: white;
   font-size: 25px;
@@ -64,5 +74,9 @@ export default {
   color: white;
   font-size: 18px;
   text-align: left;
+}
+
+.rtl .movie-item > .content > .overview {
+  text-align: right;
 }
 </style>

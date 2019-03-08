@@ -7,7 +7,7 @@
         @mouseenter="showActions"
       >
         <img :src="movie.poster" />
-        <h4 class="movie-title">{{movie.original_title}}</h4>
+        <h4 class="movie-title">{{movie.title}}</h4>
         <div class="actions" :class="{visible: actionsVisible}">
           <div class="actions-wrapper" v-if="isAuthenticated">
             <LikeButton @click="addToFavorites">

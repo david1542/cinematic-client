@@ -77,7 +77,7 @@ export default {
       const exists = this.isMovieInFavorites(id)
       if (exists) {
         this.$store.dispatch(removeFromFavorites(id)).then(id => {
-          this.actionMessage = 'Removed from favorites!'
+          this.actionMessage = this.$t('removedFromFavorites')
           this.addedMovieId = id
 
           setTimeout(() => {
@@ -88,7 +88,7 @@ export default {
         })
       } else {
         this.$store.dispatch(addToFavorites(id)).then(id => {
-          this.actionMessage = 'Added to favorites!'
+          this.actionMessage = this.$t('addedToFavorites')
           this.addedMovieId = id
 
           setTimeout(() => {

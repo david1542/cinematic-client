@@ -1,12 +1,12 @@
 <template>
   <AppPage>
-    <h2>Sign in to your account</h2>
+    <h2>{{ $t('signInToAccount') }}</h2>
     <form
       class="login-form"
       @keydown.enter="login"
     >
       <div class="form-group">
-        <label for="email">Email</label>
+        <label for="email">{{ $t('email') }}</label>
         <input
           id="email"
           class="input-field"
@@ -15,7 +15,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">{{ $t('password') }}</label>
         <input
           id="password"
           class="input-field"
@@ -28,16 +28,16 @@
         @click="login"
       >
         <span v-show="loading">
-          Logging in
+          {{ $t('logging') }}
           <i class="fas fa-circle-notch fa-spin"></i>
         </span>
         <span v-show="!loading">
-          Log in
+          {{ $t('login') }}
         </span>
       </button>
     </form>
     <router-link class="button" :to="{name: 'RegisterPage'}">
-      Create an account
+      {{ $t('createAccount') }}
     </router-link>
   </AppPage>
 </template>
@@ -110,6 +110,10 @@ h2 {
   margin: 15px auto;
 }
 
+.rtl .login-form > button {
+  direction: rtl;
+}
+
 .login-form > button > span > i{
   margin-left: 5px;
 }
@@ -128,6 +132,11 @@ h2 {
 	border-radius: 4px;
   caret-color: #f4f2ca;
 }
+
+.rtl .login-form > .form-group .input-field {
+  text-align: right;
+}
+
 .login-form > .form-group .input-field:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 30px #383A3B inset;
   -webkit-text-fill-color: #f4f2ca !important;
@@ -136,6 +145,10 @@ h2 {
   text-align: left;
   display: block;
   font-weight: bold;
+}
+
+.rtl .login-form > .form-group > label {
+  text-align: right;
 }
 
 .button {

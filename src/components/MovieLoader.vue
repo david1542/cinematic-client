@@ -18,7 +18,7 @@
       :show-percent="true"
       @vue-circle-progress="progress_step"
       @vue-circle-end="progress_end">
-        <p>Loaded</p>
+        <p>{{ $t('loaded') }}</p>
     </vue-circle>
   </div>
 </template>
