@@ -35,8 +35,6 @@
   "fillAllDetails": "Fill in all the details",
   "firstName": "First Name",
   "lastName": "Last Name",
-  "email": "Email",
-  "password": "Password",
   "cpassword": "Confirm Password",
   "signUp": "Sign up!",
   "fieldRequired": "This field is required",

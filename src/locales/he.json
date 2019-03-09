@@ -35,8 +35,6 @@
   "fillAllDetails": "אנא מלא את כל הפרטים",
   "firstName": "שם פרטי",
   "lastName": "שם משפחה",
-  "email": "אימייל",
-  "password": "סיסמא",
   "cpassword": "אישור סיסמא",
   "signUp": "הירשם!",
   "fieldRequired": "שדה זה הוא חובה",

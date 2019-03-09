@@ -139,6 +139,7 @@ h2 {
 
 .login-form > .form-group .input-field:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 30px #383A3B inset;
+  box-shadow: 0 0 0 30px #383A3B inset;
   -webkit-text-fill-color: #f4f2ca !important;
 }
 .login-form > .form-group > label {
